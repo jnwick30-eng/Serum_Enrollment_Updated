@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Serum Enrollment System</title>
+    <title>Serum Institute of India - Employee Onboarding</title>
     <link rel="stylesheet" href="styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
@@ -14,25 +14,28 @@
         <header class="header">
             <div class="header-content">
                 <div class="logo">
-                    <i class="fas fa-vial"></i>
-                    <h1>Serum Enrollment System</h1>
+                    <i class="fas fa-building"></i>
+                    <div class="logo-text">
+                        <h1>Serum Institute of India</h1>
+                        <span>Employee Onboarding System</span>
+                    </div>
                 </div>
                 <nav class="nav">
                     <button class="nav-btn active" data-tab="dashboard">
                         <i class="fas fa-chart-dashboard"></i>
                         Dashboard
                     </button>
-                    <button class="nav-btn" data-tab="enrollment">
+                    <button class="nav-btn" data-tab="onboarding">
                         <i class="fas fa-user-plus"></i>
-                        Enrollment
+                        New Hire
                     </button>
-                    <button class="nav-btn" data-tab="samples">
-                        <i class="fas fa-flask"></i>
-                        Samples
+                    <button class="nav-btn" data-tab="documents">
+                        <i class="fas fa-file-alt"></i>
+                        Documents
                     </button>
-                    <button class="nav-btn" data-tab="patients">
+                    <button class="nav-btn" data-tab="employees">
                         <i class="fas fa-users"></i>
-                        Patients
+                        Employees
                     </button>
                 </nav>
             </div>
@@ -43,7 +46,7 @@
             <!-- Dashboard Tab -->
             <div class="tab-content active" id="dashboard">
                 <div class="dashboard-header">
-                    <h2>Clinical Trial Dashboard</h2>
+                    <h2>HR Dashboard</h2>
                     <div class="date-range">
                         <i class="fas fa-calendar"></i>
                         <span id="current-date"></span>
@@ -56,17 +59,17 @@
                             <i class="fas fa-users"></i>
                         </div>
                         <div class="stat-content">
-                            <h3 id="total-patients">0</h3>
-                            <p>Total Patients</p>
+                            <h3 id="total-employees">0</h3>
+                            <p>Total Employees</p>
                         </div>
                     </div>
                     <div class="stat-card success">
                         <div class="stat-icon">
-                            <i class="fas fa-flask"></i>
+                            <i class="fas fa-user-check"></i>
                         </div>
                         <div class="stat-content">
-                            <h3 id="total-samples">0</h3>
-                            <p>Serum Samples</p>
+                            <h3 id="active-onboarding">0</h3>
+                            <p>Active Onboarding</p>
                         </div>
                     </div>
                     <div class="stat-card warning">
@@ -74,13 +77,13 @@
                             <i class="fas fa-clock"></i>
                         </div>
                         <div class="stat-content">
-                            <h3 id="pending-samples">0</h3>
-                            <p>Pending Collection</p>
+                            <h3 id="pending-documents">0</h3>
+                            <p>Pending Documents</p>
                         </div>
                     </div>
                     <div class="stat-card info">
                         <div class="stat-icon">
-                            <i class="fas fa-check-circle"></i>
+                            <i class="fas fa-percentage"></i>
                         </div>
                         <div class="stat-content">
                             <h3 id="completion-rate">0%</h3>
@@ -91,9 +94,9 @@
 
                 <div class="dashboard-grid">
                     <div class="chart-container">
-                        <h3>Enrollment Progress</h3>
+                        <h3>Monthly Onboarding Progress</h3>
                         <div class="progress-chart">
-                            <canvas id="enrollmentChart"></canvas>
+                            <canvas id="onboardingChart"></canvas>
                         </div>
                     </div>
                     <div class="recent-activity">
@@ -105,211 +108,291 @@
                 </div>
             </div>
 
-            <!-- Enrollment Tab -->
-            <div class="tab-content" id="enrollment">
+            <!-- Onboarding Tab -->
+            <div class="tab-content" id="onboarding">
                 <div class="section-header">
-                    <h2>Patient Enrollment</h2>
-                    <button class="btn btn-primary" id="new-enrollment-btn">
+                    <h2>Employee Onboarding</h2>
+                    <button class="btn btn-primary" id="new-employee-btn">
                         <i class="fas fa-plus"></i>
-                        New Enrollment
+                        Add New Employee
                     </button>
                 </div>
 
-                <div class="enrollment-form-container" id="enrollment-form-container" style="display: none;">
-                    <form class="enrollment-form" id="enrollment-form">
-                        <div class="form-grid">
-                            <div class="form-group">
-                                <label for="patient-id">Patient ID</label>
-                                <input type="text" id="patient-id" name="patientId" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="first-name">First Name</label>
-                                <input type="text" id="first-name" name="firstName" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="last-name">Last Name</label>
-                                <input type="text" id="last-name" name="lastName" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="date-of-birth">Date of Birth</label>
-                                <input type="date" id="date-of-birth" name="dateOfBirth" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="gender">Gender</label>
-                                <select id="gender" name="gender" required>
-                                    <option value="">Select Gender</option>
-                                    <option value="male">Male</option>
-                                    <option value="female">Female</option>
-                                    <option value="other">Other</option>
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label for="enrollment-date">Enrollment Date</label>
-                                <input type="date" id="enrollment-date" name="enrollmentDate" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="study-arm">Study Arm</label>
-                                <select id="study-arm" name="studyArm" required>
-                                    <option value="">Select Study Arm</option>
-                                    <option value="treatment">Treatment</option>
-                                    <option value="control">Control</option>
-                                    <option value="placebo">Placebo</option>
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label for="contact-phone">Contact Phone</label>
-                                <input type="tel" id="contact-phone" name="contactPhone">
+                <div class="onboarding-form-container" id="onboarding-form-container" style="display: none;">
+                    <form class="onboarding-form" id="onboarding-form">
+                        <div class="form-section">
+                            <h3>Personal Information</h3>
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label for="employee-id">Employee ID</label>
+                                    <input type="text" id="employee-id" name="employeeId" required readonly>
+                                </div>
+                                <div class="form-group">
+                                    <label for="first-name">First Name</label>
+                                    <input type="text" id="first-name" name="firstName" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="last-name">Last Name</label>
+                                    <input type="text" id="last-name" name="lastName" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="email">Email Address</label>
+                                    <input type="email" id="email" name="email" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="phone">Phone Number</label>
+                                    <input type="tel" id="phone" name="phone" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="date-of-birth">Date of Birth</label>
+                                    <input type="date" id="date-of-birth" name="dateOfBirth" required>
+                                </div>
                             </div>
                         </div>
+
+                        <div class="form-section">
+                            <h3>Employment Details</h3>
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label for="department">Department</label>
+                                    <select id="department" name="department" required>
+                                        <option value="">Select Department</option>
+                                        <option value="research">Research & Development</option>
+                                        <option value="manufacturing">Manufacturing</option>
+                                        <option value="quality">Quality Assurance</option>
+                                        <option value="regulatory">Regulatory Affairs</option>
+                                        <option value="hr">Human Resources</option>
+                                        <option value="finance">Finance</option>
+                                        <option value="it">Information Technology</option>
+                                        <option value="marketing">Marketing</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="position">Position</label>
+                                    <input type="text" id="position" name="position" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="manager">Reporting Manager</label>
+                                    <input type="text" id="manager" name="manager" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="start-date">Start Date</label>
+                                    <input type="date" id="start-date" name="startDate" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="employment-type">Employment Type</label>
+                                    <select id="employment-type" name="employmentType" required>
+                                        <option value="">Select Type</option>
+                                        <option value="full-time">Full Time</option>
+                                        <option value="part-time">Part Time</option>
+                                        <option value="contract">Contract</option>
+                                        <option value="intern">Intern</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="location">Work Location</label>
+                                    <select id="location" name="location" required>
+                                        <option value="">Select Location</option>
+                                        <option value="pune">Pune, Maharashtra</option>
+                                        <option value="hyderabad">Hyderabad, Telangana</option>
+                                        <option value="goa">Goa</option>
+                                        <option value="mumbai">Mumbai, Maharashtra</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
                         <div class="form-actions">
-                            <button type="button" class="btn btn-secondary" id="cancel-enrollment">Cancel</button>
-                            <button type="submit" class="btn btn-primary">Enroll Patient</button>
+                            <button type="button" class="btn btn-secondary" id="cancel-onboarding">Cancel</button>
+                            <button type="submit" class="btn btn-primary">Start Onboarding</button>
                         </div>
                     </form>
                 </div>
 
-                <div class="enrollment-list">
+                <div class="onboarding-list">
                     <div class="search-bar">
                         <i class="fas fa-search"></i>
-                        <input type="text" placeholder="Search patients..." id="patient-search">
+                        <input type="text" placeholder="Search employees..." id="employee-search">
                     </div>
                     <div class="table-container">
                         <table class="data-table">
                             <thead>
                                 <tr>
-                                    <th>Patient ID</th>
+                                    <th>Employee ID</th>
                                     <th>Name</th>
-                                    <th>Age</th>
-                                    <th>Gender</th>
-                                    <th>Study Arm</th>
-                                    <th>Enrollment Date</th>
+                                    <th>Department</th>
+                                    <th>Position</th>
+                                    <th>Start Date</th>
                                     <th>Status</th>
+                                    <th>Progress</th>
                                     <th>Actions</th>
                                 </tr>
                             </thead>
-                            <tbody id="patients-table-body">
-                                <!-- Patient rows will be populated by JavaScript -->
+                            <tbody id="employees-table-body">
+                                <!-- Employee rows will be populated by JavaScript -->
                             </tbody>
                         </table>
                     </div>
                 </div>
             </div>
 
-            <!-- Samples Tab -->
-            <div class="tab-content" id="samples">
+            <!-- Documents Tab -->
+            <div class="tab-content" id="documents">
                 <div class="section-header">
-                    <h2>Serum Sample Management</h2>
-                    <button class="btn btn-primary" id="new-sample-btn">
-                        <i class="fas fa-plus"></i>
-                        New Sample
+                    <h2>Document Management</h2>
+                    <button class="btn btn-primary" id="upload-document-btn">
+                        <i class="fas fa-upload"></i>
+                        Upload Document
                     </button>
                 </div>
 
-                <div class="sample-form-container" id="sample-form-container" style="display: none;">
-                    <form class="sample-form" id="sample-form">
-                        <div class="form-grid">
-                            <div class="form-group">
-                                <label for="sample-patient-id">Patient ID</label>
-                                <select id="sample-patient-id" name="patientId" required>
-                                    <option value="">Select Patient</option>
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label for="sample-id">Sample ID</label>
-                                <input type="text" id="sample-id" name="sampleId" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="collection-date">Collection Date</label>
-                                <input type="datetime-local" id="collection-date" name="collectionDate" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="sample-type">Sample Type</label>
-                                <select id="sample-type" name="sampleType" required>
-                                    <option value="">Select Type</option>
-                                    <option value="serum">Serum</option>
-                                    <option value="plasma">Plasma</option>
-                                    <option value="whole-blood">Whole Blood</option>
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label for="volume">Volume (mL)</label>
-                                <input type="number" id="volume" name="volume" step="0.1" min="0" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="storage-location">Storage Location</label>
-                                <input type="text" id="storage-location" name="storageLocation" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="collection-notes">Collection Notes</label>
-                                <textarea id="collection-notes" name="collectionNotes" rows="3"></textarea>
-                            </div>
+                <div class="document-categories">
+                    <div class="category-card">
+                        <div class="category-icon">
+                            <i class="fas fa-id-card"></i>
                         </div>
-                        <div class="form-actions">
-                            <button type="button" class="btn btn-secondary" id="cancel-sample">Cancel</button>
-                            <button type="submit" class="btn btn-primary">Add Sample</button>
+                        <h3>Identity Documents</h3>
+                        <p>Aadhaar, PAN, Passport verification</p>
+                        <div class="category-stats">
+                            <span id="identity-docs-count">0</span> documents
                         </div>
-                    </form>
+                    </div>
+                    <div class="category-card">
+                        <div class="category-icon">
+                            <i class="fas fa-graduation-cap"></i>
+                        </div>
+                        <h3>Educational Certificates</h3>
+                        <p>Degree certificates, transcripts</p>
+                        <div class="category-stats">
+                            <span id="education-docs-count">0</span> documents
+                        </div>
+                    </div>
+                    <div class="category-card">
+                        <div class="category-icon">
+                            <i class="fas fa-briefcase"></i>
+                        </div>
+                        <h3>Employment Documents</h3>
+                        <p>Offer letters, contracts, policies</p>
+                        <div class="category-stats">
+                            <span id="employment-docs-count">0</span> documents
+                        </div>
+                    </div>
+                    <div class="category-card">
+                        <div class="category-icon">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <h3>Compliance Documents</h3>
+                        <p>Background checks, medical reports</p>
+                        <div class="category-stats">
+                            <span id="compliance-docs-count">0</span> documents
+                        </div>
+                    </div>
                 </div>
 
-                <div class="samples-list">
+                <div class="documents-list">
                     <div class="search-bar">
                         <i class="fas fa-search"></i>
-                        <input type="text" placeholder="Search samples..." id="sample-search">
+                        <input type="text" placeholder="Search documents..." id="document-search">
                     </div>
                     <div class="table-container">
                         <table class="data-table">
                             <thead>
                                 <tr>
-                                    <th>Sample ID</th>
-                                    <th>Patient ID</th>
-                                    <th>Patient Name</th>
-                                    <th>Type</th>
-                                    <th>Volume (mL)</th>
-                                    <th>Collection Date</th>
-                                    <th>Storage Location</th>
+                                    <th>Document Name</th>
+                                    <th>Employee</th>
+                                    <th>Category</th>
+                                    <th>Upload Date</th>
                                     <th>Status</th>
                                     <th>Actions</th>
                                 </tr>
                             </thead>
-                            <tbody id="samples-table-body">
-                                <!-- Sample rows will be populated by JavaScript -->
+                            <tbody id="documents-table-body">
+                                <!-- Document rows will be populated by JavaScript -->
                             </tbody>
                         </table>
                     </div>
                 </div>
             </div>
 
-            <!-- Patients Tab -->
-            <div class="tab-content" id="patients">
+            <!-- Employees Tab -->
+            <div class="tab-content" id="employees">
                 <div class="section-header">
-                    <h2>Patient Management</h2>
+                    <h2>Employee Directory</h2>
                 </div>
 
-                <div class="patients-overview">
+                <div class="employees-overview">
                     <div class="search-bar">
                         <i class="fas fa-search"></i>
-                        <input type="text" placeholder="Search patients..." id="patients-overview-search">
+                        <input type="text" placeholder="Search employees..." id="employees-overview-search">
                     </div>
                     
-                    <div class="patients-grid" id="patients-grid">
-                        <!-- Patient cards will be populated by JavaScript -->
+                    <div class="employees-grid" id="employees-grid">
+                        <!-- Employee cards will be populated by JavaScript -->
                     </div>
                 </div>
             </div>
         </main>
     </div>
 
-    <!-- Modal for patient details -->
-    <div class="modal" id="patient-modal">
+    <!-- Modal for employee details -->
+    <div class="modal" id="employee-modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h3>Patient Details</h3>
-                <button class="modal-close" id="close-patient-modal">
+                <h3>Employee Details</h3>
+                <button class="modal-close" id="close-employee-modal">
                     <i class="fas fa-times"></i>
                 </button>
             </div>
-            <div class="modal-body" id="patient-modal-body">
-                <!-- Patient details will be populated by JavaScript -->
+            <div class="modal-body" id="employee-modal-body">
+                <!-- Employee details will be populated by JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Document Upload Modal -->
+    <div class="modal" id="document-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Upload Document</h3>
+                <button class="modal-close" id="close-document-modal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form class="document-form" id="document-form">
+                    <div class="form-group">
+                        <label for="doc-employee">Employee</label>
+                        <select id="doc-employee" name="employeeId" required>
+                            <option value="">Select Employee</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="doc-category">Document Category</label>
+                        <select id="doc-category" name="category" required>
+                            <option value="">Select Category</option>
+                            <option value="identity">Identity Documents</option>
+                            <option value="education">Educational Certificates</option>
+                            <option value="employment">Employment Documents</option>
+                            <option value="compliance">Compliance Documents</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="doc-name">Document Name</label>
+                        <input type="text" id="doc-name" name="documentName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="doc-file">Upload File</label>
+                        <input type="file" id="doc-file" name="file" accept=".pdf,.doc,.docx,.jpg,.png" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="doc-notes">Notes</label>
+                        <textarea id="doc-notes" name="notes" rows="3"></textarea>
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-secondary" id="cancel-document">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Upload Document</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
