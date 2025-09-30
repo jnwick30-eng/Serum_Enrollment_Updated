@@ -1,6 +1,6 @@
 // Application state
-let patients = [];
-let samples = [];
+let employees = [];
+let documents = [];
 let currentTab = 'dashboard';
 
 // Initialize the application
@@ -22,8 +22,8 @@ function initializeApp() {
     });
 
     // Form handlers
-    setupEnrollmentForm();
-    setupSampleForm();
+    setupOnboardingForm();
+    setupDocumentForm();
     setupSearchFunctionality();
     setupModals();
 }
@@ -48,234 +48,250 @@ function switchTab(tabName) {
         case 'dashboard':
             updateDashboard();
             break;
-        case 'enrollment':
-            renderPatientsTable();
+        case 'onboarding':
+            renderEmployeesTable();
             break;
-        case 'samples':
-            renderSamplesTable();
-            populatePatientSelect();
+        case 'documents':
+            renderDocumentsTable();
+            populateEmployeeSelect();
+            updateDocumentStats();
             break;
-        case 'patients':
-            renderPatientsGrid();
+        case 'employees':
+            renderEmployeesGrid();
             break;
     }
 }
 
-function setupEnrollmentForm() {
-    const newEnrollmentBtn = document.getElementById('new-enrollment-btn');
-    const enrollmentFormContainer = document.getElementById('enrollment-form-container');
-    const enrollmentForm = document.getElementById('enrollment-form');
-    const cancelEnrollmentBtn = document.getElementById('cancel-enrollment');
+function setupOnboardingForm() {
+    const newEmployeeBtn = document.getElementById('new-employee-btn');
+    const onboardingFormContainer = document.getElementById('onboarding-form-container');
+    const onboardingForm = document.getElementById('onboarding-form');
+    const cancelOnboardingBtn = document.getElementById('cancel-onboarding');
 
-    newEnrollmentBtn.addEventListener('click', () => {
-        enrollmentFormContainer.style.display = 'block';
-        generatePatientId();
-        setDefaultEnrollmentDate();
+    newEmployeeBtn.addEventListener('click', () => {
+        onboardingFormContainer.style.display = 'block';
+        generateEmployeeId();
+        setDefaultStartDate();
     });
 
-    cancelEnrollmentBtn.addEventListener('click', () => {
-        enrollmentFormContainer.style.display = 'none';
-        enrollmentForm.reset();
+    cancelOnboardingBtn.addEventListener('click', () => {
+        onboardingFormContainer.style.display = 'none';
+        onboardingForm.reset();
     });
 
-    enrollmentForm.addEventListener('submit', (e) => {
+    onboardingForm.addEventListener('submit', (e) => {
         e.preventDefault();
-        handleEnrollmentSubmit();
+        handleOnboardingSubmit();
     });
 }
 
-function setupSampleForm() {
-    const newSampleBtn = document.getElementById('new-sample-btn');
-    const sampleFormContainer = document.getElementById('sample-form-container');
-    const sampleForm = document.getElementById('sample-form');
-    const cancelSampleBtn = document.getElementById('cancel-sample');
+function setupDocumentForm() {
+    const uploadDocumentBtn = document.getElementById('upload-document-btn');
+    const documentModal = document.getElementById('document-modal');
+    const documentForm = document.getElementById('document-form');
+    const cancelDocumentBtn = document.getElementById('cancel-document');
 
-    newSampleBtn.addEventListener('click', () => {
-        sampleFormContainer.style.display = 'block';
-        generateSampleId();
-        setDefaultCollectionDate();
-        populatePatientSelect();
+    uploadDocumentBtn.addEventListener('click', () => {
+        documentModal.classList.add('active');
+        populateEmployeeSelect();
     });
 
-    cancelSampleBtn.addEventListener('click', () => {
-        sampleFormContainer.style.display = 'none';
-        sampleForm.reset();
+    cancelDocumentBtn.addEventListener('click', () => {
+        documentModal.classList.remove('active');
+        documentForm.reset();
     });
 
-    sampleForm.addEventListener('submit', (e) => {
+    documentForm.addEventListener('submit', (e) => {
         e.preventDefault();
-        handleSampleSubmit();
+        handleDocumentSubmit();
     });
 }
 
 function setupSearchFunctionality() {
-    const patientSearch = document.getElementById('patient-search');
-    const sampleSearch = document.getElementById('sample-search');
-    const patientsOverviewSearch = document.getElementById('patients-overview-search');
+    const employeeSearch = document.getElementById('employee-search');
+    const documentSearch = document.getElementById('document-search');
+    const employeesOverviewSearch = document.getElementById('employees-overview-search');
 
-    if (patientSearch) {
-        patientSearch.addEventListener('input', (e) => {
-            filterPatientsTable(e.target.value);
+    if (employeeSearch) {
+        employeeSearch.addEventListener('input', (e) => {
+            filterEmployeesTable(e.target.value);
         });
     }
 
-    if (sampleSearch) {
-        sampleSearch.addEventListener('input', (e) => {
-            filterSamplesTable(e.target.value);
+    if (documentSearch) {
+        documentSearch.addEventListener('input', (e) => {
+            filterDocumentsTable(e.target.value);
         });
     }
 
-    if (patientsOverviewSearch) {
-        patientsOverviewSearch.addEventListener('input', (e) => {
-            filterPatientsGrid(e.target.value);
+    if (employeesOverviewSearch) {
+        employeesOverviewSearch.addEventListener('input', (e) => {
+            filterEmployeesGrid(e.target.value);
         });
     }
 }
 
 function setupModals() {
-    const patientModal = document.getElementById('patient-modal');
-    const closePatientModal = document.getElementById('close-patient-modal');
+    const employeeModal = document.getElementById('employee-modal');
+    const closeEmployeeModal = document.getElementById('close-employee-modal');
+    const documentModal = document.getElementById('document-modal');
+    const closeDocumentModal = document.getElementById('close-document-modal');
 
-    closePatientModal.addEventListener('click', () => {
-        patientModal.classList.remove('active');
+    closeEmployeeModal.addEventListener('click', () => {
+        employeeModal.classList.remove('active');
     });
 
-    patientModal.addEventListener('click', (e) => {
-        if (e.target === patientModal) {
-            patientModal.classList.remove('active');
+    closeDocumentModal.addEventListener('click', () => {
+        documentModal.classList.remove('active');
+    });
+
+    employeeModal.addEventListener('click', (e) => {
+        if (e.target === employeeModal) {
+            employeeModal.classList.remove('active');
+        }
+    });
+
+    documentModal.addEventListener('click', (e) => {
+        if (e.target === documentModal) {
+            documentModal.classList.remove('active');
         }
     });
 }
 
-function generatePatientId() {
-    const prefix = 'PT';
-    const timestamp = Date.now().toString().slice(-6);
-    const patientId = `${prefix}${timestamp}`;
-    document.getElementById('patient-id').value = patientId;
+function generateEmployeeId() {
+    const prefix = 'SII';
+    const year = new Date().getFullYear().toString().slice(-2);
+    const timestamp = Date.now().toString().slice(-4);
+    const employeeId = `${prefix}${year}${timestamp}`;
+    document.getElementById('employee-id').value = employeeId;
 }
 
-function generateSampleId() {
-    const prefix = 'SM';
-    const timestamp = Date.now().toString().slice(-6);
-    const sampleId = `${prefix}${timestamp}`;
-    document.getElementById('sample-id').value = sampleId;
-}
-
-function setDefaultEnrollmentDate() {
+function setDefaultStartDate() {
     const today = new Date().toISOString().split('T')[0];
-    document.getElementById('enrollment-date').value = today;
+    document.getElementById('start-date').value = today;
 }
 
-function setDefaultCollectionDate() {
-    const now = new Date();
-    const localDateTime = new Date(now.getTime() - now.getTimezoneOffset() * 60000)
-        .toISOString().slice(0, 16);
-    document.getElementById('collection-date').value = localDateTime;
-}
-
-function handleEnrollmentSubmit() {
-    const formData = new FormData(document.getElementById('enrollment-form'));
-    const patientData = Object.fromEntries(formData.entries());
+function handleOnboardingSubmit() {
+    const formData = new FormData(document.getElementById('onboarding-form'));
+    const employeeData = Object.fromEntries(formData.entries());
     
     // Add additional fields
-    patientData.id = patientData.patientId;
-    patientData.status = 'active';
-    patientData.enrollmentTimestamp = new Date().toISOString();
-    patientData.age = calculateAge(patientData.dateOfBirth);
+    employeeData.id = employeeData.employeeId;
+    employeeData.status = 'in-progress';
+    employeeData.onboardingTimestamp = new Date().toISOString();
+    employeeData.progress = 25; // Initial progress
+    employeeData.documentsSubmitted = 0;
+    employeeData.documentsRequired = 8;
 
-    patients.push(patientData);
+    employees.push(employeeData);
     
     // Hide form and reset
-    document.getElementById('enrollment-form-container').style.display = 'none';
-    document.getElementById('enrollment-form').reset();
+    document.getElementById('onboarding-form-container').style.display = 'none';
+    document.getElementById('onboarding-form').reset();
     
     // Update displays
-    renderPatientsTable();
+    renderEmployeesTable();
     updateDashboard();
-    addActivity('enrollment', `New patient enrolled: ${patientData.firstName} ${patientData.lastName}`);
+    addActivity('onboarding', `New employee onboarded: ${employeeData.firstName} ${employeeData.lastName}`);
     
-    showNotification('Patient enrolled successfully!', 'success');
+    showNotification('Employee onboarding started successfully!', 'success');
 }
 
-function handleSampleSubmit() {
-    const formData = new FormData(document.getElementById('sample-form'));
-    const sampleData = Object.fromEntries(formData.entries());
+function handleDocumentSubmit() {
+    const formData = new FormData(document.getElementById('document-form'));
+    const documentData = Object.fromEntries(formData.entries());
     
-    // Find patient info
-    const patient = patients.find(p => p.id === sampleData.patientId);
-    if (!patient) {
-        showNotification('Patient not found!', 'error');
+    // Find employee info
+    const employee = employees.find(e => e.id === documentData.employeeId);
+    if (!employee) {
+        showNotification('Employee not found!', 'error');
         return;
     }
     
     // Add additional fields
-    sampleData.id = sampleData.sampleId;
-    sampleData.patientName = `${patient.firstName} ${patient.lastName}`;
-    sampleData.status = 'stored';
-    sampleData.collectionTimestamp = new Date(sampleData.collectionDate).toISOString();
+    documentData.id = `DOC${Date.now()}`;
+    documentData.employeeName = `${employee.firstName} ${employee.lastName}`;
+    documentData.status = 'pending';
+    documentData.uploadDate = new Date().toISOString();
+    documentData.fileName = documentData.file ? 'Document uploaded' : 'No file';
 
-    samples.push(sampleData);
+    documents.push(documentData);
     
-    // Hide form and reset
-    document.getElementById('sample-form-container').style.display = 'none';
-    document.getElementById('sample-form').reset();
+    // Update employee progress
+    employee.documentsSubmitted++;
+    employee.progress = Math.min(100, (employee.documentsSubmitted / employee.documentsRequired) * 100);
+    
+    if (employee.progress === 100) {
+        employee.status = 'completed';
+    }
+    
+    // Hide modal and reset
+    document.getElementById('document-modal').classList.remove('active');
+    document.getElementById('document-form').reset();
     
     // Update displays
-    renderSamplesTable();
+    renderDocumentsTable();
+    renderEmployeesTable();
     updateDashboard();
-    addActivity('sample', `New sample collected: ${sampleData.sampleId} from ${sampleData.patientName}`);
+    updateDocumentStats();
+    addActivity('document', `Document uploaded for ${documentData.employeeName}: ${documentData.documentName}`);
     
-    showNotification('Sample added successfully!', 'success');
+    showNotification('Document uploaded successfully!', 'success');
 }
 
-function populatePatientSelect() {
-    const select = document.getElementById('sample-patient-id');
-    select.innerHTML = '<option value="">Select Patient</option>';
+function populateEmployeeSelect() {
+    const select = document.getElementById('doc-employee');
+    select.innerHTML = '<option value="">Select Employee</option>';
     
-    patients.forEach(patient => {
+    employees.forEach(employee => {
         const option = document.createElement('option');
-        option.value = patient.id;
-        option.textContent = `${patient.id} - ${patient.firstName} ${patient.lastName}`;
+        option.value = employee.id;
+        option.textContent = `${employee.id} - ${employee.firstName} ${employee.lastName}`;
         select.appendChild(option);
     });
 }
 
-function renderPatientsTable() {
-    const tbody = document.getElementById('patients-table-body');
+function renderEmployeesTable() {
+    const tbody = document.getElementById('employees-table-body');
     tbody.innerHTML = '';
 
-    if (patients.length === 0) {
+    if (employees.length === 0) {
         tbody.innerHTML = `
             <tr>
                 <td colspan="8" class="empty-state">
                     <i class="fas fa-users"></i>
-                    <h3>No patients enrolled yet</h3>
-                    <p>Click "New Enrollment" to add your first patient</p>
+                    <h3>No employees in onboarding yet</h3>
+                    <p>Click "Add New Employee" to start the onboarding process</p>
                 </td>
             </tr>
         `;
         return;
     }
 
-    patients.forEach(patient => {
+    employees.forEach(employee => {
         const row = document.createElement('tr');
         row.innerHTML = `
-            <td>${patient.id}</td>
-            <td>${patient.firstName} ${patient.lastName}</td>
-            <td>${patient.age}</td>
-            <td>${capitalizeFirst(patient.gender)}</td>
-            <td>${capitalizeFirst(patient.studyArm)}</td>
-            <td>${formatDate(patient.enrollmentDate)}</td>
-            <td><span class="status-badge ${patient.status}">${capitalizeFirst(patient.status)}</span></td>
+            <td>${employee.id}</td>
+            <td>${employee.firstName} ${employee.lastName}</td>
+            <td>${capitalizeFirst(employee.department)}</td>
+            <td>${employee.position}</td>
+            <td>${formatDate(employee.startDate)}</td>
+            <td><span class="status-badge ${employee.status}">${capitalizeFirst(employee.status.replace('-', ' '))}</span></td>
+            <td>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: ${employee.progress}%"></div>
+                </div>
+                <small>${Math.round(employee.progress)}% complete</small>
+            </td>
             <td>
                 <div class="action-buttons">
-                    <button class="action-btn view" onclick="viewPatient('${patient.id}')">
+                    <button class="action-btn view" onclick="viewEmployee('${employee.id}')">
                         <i class="fas fa-eye"></i>
                     </button>
-                    <button class="action-btn edit" onclick="editPatient('${patient.id}')">
+                    <button class="action-btn edit" onclick="editEmployee('${employee.id}')">
                         <i class="fas fa-edit"></i>
                     </button>
-                    <button class="action-btn delete" onclick="deletePatient('${patient.id}')">
+                    <button class="action-btn delete" onclick="deleteEmployee('${employee.id}')">
                         <i class="fas fa-trash"></i>
                     </button>
                 </div>
@@ -285,43 +301,40 @@ function renderPatientsTable() {
     });
 }
 
-function renderSamplesTable() {
-    const tbody = document.getElementById('samples-table-body');
+function renderDocumentsTable() {
+    const tbody = document.getElementById('documents-table-body');
     tbody.innerHTML = '';
 
-    if (samples.length === 0) {
+    if (documents.length === 0) {
         tbody.innerHTML = `
             <tr>
-                <td colspan="9" class="empty-state">
-                    <i class="fas fa-flask"></i>
-                    <h3>No samples collected yet</h3>
-                    <p>Click "New Sample" to add your first sample</p>
+                <td colspan="6" class="empty-state">
+                    <i class="fas fa-file-alt"></i>
+                    <h3>No documents uploaded yet</h3>
+                    <p>Click "Upload Document" to add employee documents</p>
                 </td>
             </tr>
         `;
         return;
     }
 
-    samples.forEach(sample => {
+    documents.forEach(document => {
         const row = document.createElement('tr');
         row.innerHTML = `
-            <td>${sample.id}</td>
-            <td>${sample.patientId}</td>
-            <td>${sample.patientName}</td>
-            <td>${capitalizeFirst(sample.sampleType)}</td>
-            <td>${sample.volume}</td>
-            <td>${formatDateTime(sample.collectionDate)}</td>
-            <td>${sample.storageLocation}</td>
-            <td><span class="status-badge ${sample.status}">${capitalizeFirst(sample.status)}</span></td>
+            <td>${document.documentName}</td>
+            <td>${document.employeeName}</td>
+            <td>${capitalizeFirst(document.category)}</td>
+            <td>${formatDate(document.uploadDate)}</td>
+            <td><span class="status-badge ${document.status}">${capitalizeFirst(document.status)}</span></td>
             <td>
                 <div class="action-buttons">
-                    <button class="action-btn view" onclick="viewSample('${sample.id}')">
+                    <button class="action-btn view" onclick="viewDocument('${document.id}')">
                         <i class="fas fa-eye"></i>
                     </button>
-                    <button class="action-btn edit" onclick="editSample('${sample.id}')">
-                        <i class="fas fa-edit"></i>
+                    <button class="action-btn edit" onclick="approveDocument('${document.id}')">
+                        <i class="fas fa-check"></i>
                     </button>
-                    <button class="action-btn delete" onclick="deleteSample('${sample.id}')">
+                    <button class="action-btn delete" onclick="deleteDocument('${document.id}')">
                         <i class="fas fa-trash"></i>
                     </button>
                 </div>
@@ -331,54 +344,60 @@ function renderSamplesTable() {
     });
 }
 
-function renderPatientsGrid() {
-    const grid = document.getElementById('patients-grid');
+function renderEmployeesGrid() {
+    const grid = document.getElementById('employees-grid');
     grid.innerHTML = '';
 
-    if (patients.length === 0) {
+    if (employees.length === 0) {
         grid.innerHTML = `
             <div class="empty-state">
                 <i class="fas fa-users"></i>
-                <h3>No patients enrolled yet</h3>
-                <p>Switch to the Enrollment tab to add your first patient</p>
+                <h3>No employees in system yet</h3>
+                <p>Switch to the New Hire tab to add your first employee</p>
             </div>
         `;
         return;
     }
 
-    patients.forEach(patient => {
+    employees.forEach(employee => {
         const card = document.createElement('div');
-        card.className = 'patient-card';
-        card.onclick = () => viewPatient(patient.id);
+        card.className = 'employee-card';
+        card.onclick = () => viewEmployee(employee.id);
         
-        const initials = `${patient.firstName.charAt(0)}${patient.lastName.charAt(0)}`;
-        const patientSamples = samples.filter(s => s.patientId === patient.id);
+        const initials = `${employee.firstName.charAt(0)}${employee.lastName.charAt(0)}`;
+        const employeeDocuments = documents.filter(d => d.employeeId === employee.id);
         
         card.innerHTML = `
-            <div class="patient-header">
-                <div class="patient-avatar">${initials}</div>
-                <div class="patient-info">
-                    <h3>${patient.firstName} ${patient.lastName}</h3>
-                    <p>${patient.id}</p>
+            <div class="employee-header">
+                <div class="employee-avatar">${initials}</div>
+                <div class="employee-info">
+                    <h3>${employee.firstName} ${employee.lastName}</h3>
+                    <p>${employee.id}</p>
                 </div>
             </div>
-            <div class="patient-details">
-                <div class="patient-detail">
-                    <label>Age</label>
-                    <span>${patient.age} years</span>
+            <div class="employee-details">
+                <div class="employee-detail">
+                    <label>Department</label>
+                    <span>${capitalizeFirst(employee.department)}</span>
                 </div>
-                <div class="patient-detail">
-                    <label>Gender</label>
-                    <span>${capitalizeFirst(patient.gender)}</span>
+                <div class="employee-detail">
+                    <label>Position</label>
+                    <span>${employee.position}</span>
                 </div>
-                <div class="patient-detail">
-                    <label>Study Arm</label>
-                    <span>${capitalizeFirst(patient.studyArm)}</span>
+                <div class="employee-detail">
+                    <label>Start Date</label>
+                    <span>${formatDate(employee.startDate)}</span>
                 </div>
-                <div class="patient-detail">
-                    <label>Samples</label>
-                    <span>${patientSamples.length} collected</span>
+                <div class="employee-detail">
+                    <label>Documents</label>
+                    <span>${employeeDocuments.length} uploaded</span>
                 </div>
+            </div>
+            <div class="onboarding-progress">
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: ${employee.progress}%"></div>
+                </div>
+                <small>${Math.round(employee.progress)}% onboarding complete</small>
             </div>
         `;
         
@@ -388,40 +407,42 @@ function renderPatientsGrid() {
 
 function updateDashboard() {
     // Update stats
-    document.getElementById('total-patients').textContent = patients.length;
-    document.getElementById('total-samples').textContent = samples.length;
+    document.getElementById('total-employees').textContent = employees.length;
     
-    const pendingSamples = samples.filter(s => s.status === 'pending').length;
-    document.getElementById('pending-samples').textContent = pendingSamples;
+    const activeOnboarding = employees.filter(e => e.status === 'in-progress').length;
+    document.getElementById('active-onboarding').textContent = activeOnboarding;
     
-    const completionRate = patients.length > 0 ? 
-        Math.round((samples.length / (patients.length * 3)) * 100) : 0; // Assuming 3 samples per patient
+    const pendingDocuments = documents.filter(d => d.status === 'pending').length;
+    document.getElementById('pending-documents').textContent = pendingDocuments;
+    
+    const completionRate = employees.length > 0 ? 
+        Math.round(employees.reduce((sum, emp) => sum + emp.progress, 0) / employees.length) : 0;
     document.getElementById('completion-rate').textContent = `${completionRate}%`;
 
     // Update chart
-    updateEnrollmentChart();
+    updateOnboardingChart();
 }
 
-function updateEnrollmentChart() {
-    const ctx = document.getElementById('enrollmentChart');
+function updateOnboardingChart() {
+    const ctx = document.getElementById('onboardingChart');
     if (!ctx) return;
 
-    // Create enrollment data by month
-    const enrollmentData = getEnrollmentDataByMonth();
+    // Create onboarding data by month
+    const onboardingData = getOnboardingDataByMonth();
     
     new Chart(ctx, {
         type: 'line',
         data: {
-            labels: enrollmentData.labels,
+            labels: onboardingData.labels,
             datasets: [{
-                label: 'Patients Enrolled',
-                data: enrollmentData.data,
-                borderColor: '#667eea',
-                backgroundColor: 'rgba(102, 126, 234, 0.1)',
+                label: 'New Hires',
+                data: onboardingData.data,
+                borderColor: '#1e3c72',
+                backgroundColor: 'rgba(30, 60, 114, 0.1)',
                 borderWidth: 3,
                 fill: true,
                 tension: 0.4,
-                pointBackgroundColor: '#667eea',
+                pointBackgroundColor: '#1e3c72',
                 pointBorderColor: '#ffffff',
                 pointBorderWidth: 2,
                 pointRadius: 6
@@ -452,13 +473,13 @@ function updateEnrollmentChart() {
     });
 }
 
-function getEnrollmentDataByMonth() {
+function getOnboardingDataByMonth() {
     const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'];
     const data = new Array(6).fill(0);
     
-    patients.forEach(patient => {
-        const enrollmentDate = new Date(patient.enrollmentDate);
-        const monthIndex = enrollmentDate.getMonth();
+    employees.forEach(employee => {
+        const startDate = new Date(employee.startDate);
+        const monthIndex = startDate.getMonth();
         if (monthIndex < 6) {
             data[monthIndex]++;
         }
@@ -467,12 +488,24 @@ function getEnrollmentDataByMonth() {
     return { labels: months, data };
 }
 
+function updateDocumentStats() {
+    const identityCount = documents.filter(d => d.category === 'identity').length;
+    const educationCount = documents.filter(d => d.category === 'education').length;
+    const employmentCount = documents.filter(d => d.category === 'employment').length;
+    const complianceCount = documents.filter(d => d.category === 'compliance').length;
+
+    document.getElementById('identity-docs-count').textContent = identityCount;
+    document.getElementById('education-docs-count').textContent = educationCount;
+    document.getElementById('employment-docs-count').textContent = employmentCount;
+    document.getElementById('compliance-docs-count').textContent = complianceCount;
+}
+
 function addActivity(type, message) {
     const activityList = document.getElementById('activity-list');
     const activityItem = document.createElement('div');
     activityItem.className = 'activity-item';
     
-    const iconClass = type === 'enrollment' ? 'fa-user-plus' : 'fa-flask';
+    const iconClass = type === 'onboarding' ? 'fa-user-plus' : 'fa-file-alt';
     const now = new Date();
     
     activityItem.innerHTML = `
@@ -481,7 +514,7 @@ function addActivity(type, message) {
         </div>
         <div class="activity-content">
             <h4>${message}</h4>
-            <p>Clinical trial activity</p>
+            <p>HR onboarding activity</p>
         </div>
         <div class="activity-time">
             ${formatTime(now)}
@@ -496,61 +529,92 @@ function addActivity(type, message) {
     }
 }
 
-function viewPatient(patientId) {
-    const patient = patients.find(p => p.id === patientId);
-    if (!patient) return;
+function viewEmployee(employeeId) {
+    const employee = employees.find(e => e.id === employeeId);
+    if (!employee) return;
     
-    const patientSamples = samples.filter(s => s.patientId === patientId);
-    const modal = document.getElementById('patient-modal');
-    const modalBody = document.getElementById('patient-modal-body');
+    const employeeDocuments = documents.filter(d => d.employeeId === employeeId);
+    const modal = document.getElementById('employee-modal');
+    const modalBody = document.getElementById('employee-modal-body');
     
     modalBody.innerHTML = `
-        <div class="patient-details-modal">
+        <div class="employee-details-modal">
             <div class="form-grid">
                 <div class="form-group">
-                    <label>Patient ID</label>
-                    <span>${patient.id}</span>
+                    <label>Employee ID</label>
+                    <span>${employee.id}</span>
                 </div>
                 <div class="form-group">
                     <label>Full Name</label>
-                    <span>${patient.firstName} ${patient.lastName}</span>
+                    <span>${employee.firstName} ${employee.lastName}</span>
                 </div>
                 <div class="form-group">
-                    <label>Date of Birth</label>
-                    <span>${formatDate(patient.dateOfBirth)}</span>
+                    <label>Email</label>
+                    <span>${employee.email}</span>
                 </div>
                 <div class="form-group">
-                    <label>Age</label>
-                    <span>${patient.age} years</span>
+                    <label>Phone</label>
+                    <span>${employee.phone}</span>
                 </div>
                 <div class="form-group">
-                    <label>Gender</label>
-                    <span>${capitalizeFirst(patient.gender)}</span>
+                    <label>Department</label>
+                    <span>${capitalizeFirst(employee.department)}</span>
                 </div>
                 <div class="form-group">
-                    <label>Study Arm</label>
-                    <span>${capitalizeFirst(patient.studyArm)}</span>
+                    <label>Position</label>
+                    <span>${employee.position}</span>
                 </div>
                 <div class="form-group">
-                    <label>Enrollment Date</label>
-                    <span>${formatDate(patient.enrollmentDate)}</span>
+                    <label>Manager</label>
+                    <span>${employee.manager}</span>
                 </div>
                 <div class="form-group">
-                    <label>Contact Phone</label>
-                    <span>${patient.contactPhone || 'Not provided'}</span>
+                    <label>Start Date</label>
+                    <span>${formatDate(employee.startDate)}</span>
+                </div>
+                <div class="form-group">
+                    <label>Employment Type</label>
+                    <span>${capitalizeFirst(employee.employmentType.replace('-', ' '))}</span>
+                </div>
+                <div class="form-group">
+                    <label>Location</label>
+                    <span>${employee.location}</span>
                 </div>
             </div>
+            
             <div style="margin-top: 2rem;">
-                <h4>Sample Collection History (${patientSamples.length} samples)</h4>
-                <div class="samples-summary">
-                    ${patientSamples.map(sample => `
-                        <div class="sample-item" style="display: flex; justify-content: space-between; align-items: center; padding: 0.5rem 0; border-bottom: 1px solid #e5e7eb;">
+                <h4>Onboarding Progress</h4>
+                <div class="progress-steps">
+                    <div class="progress-step">
+                        <div class="step-icon ${employee.progress >= 25 ? 'completed' : ''}">1</div>
+                        <div class="step-label">Personal Info</div>
+                    </div>
+                    <div class="progress-step">
+                        <div class="step-icon ${employee.progress >= 50 ? 'completed' : employee.progress >= 25 ? 'active' : ''}">2</div>
+                        <div class="step-label">Documents</div>
+                    </div>
+                    <div class="progress-step">
+                        <div class="step-icon ${employee.progress >= 75 ? 'completed' : employee.progress >= 50 ? 'active' : ''}">3</div>
+                        <div class="step-label">Training</div>
+                    </div>
+                    <div class="progress-step">
+                        <div class="step-icon ${employee.progress >= 100 ? 'completed' : employee.progress >= 75 ? 'active' : ''}">4</div>
+                        <div class="step-label">Complete</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div style="margin-top: 2rem;">
+                <h4>Documents Submitted (${employeeDocuments.length})</h4>
+                <div class="documents-summary">
+                    ${employeeDocuments.map(doc => `
+                        <div class="document-item" style="display: flex; justify-content: space-between; align-items: center; padding: 0.5rem 0; border-bottom: 1px solid #e5e7eb;">
                             <div>
-                                <strong>${sample.id}</strong> - ${capitalizeFirst(sample.sampleType)}
+                                <strong>${doc.documentName}</strong> - ${capitalizeFirst(doc.category)}
                                 <br>
-                                <small>${formatDateTime(sample.collectionDate)}</small>
+                                <small>${formatDate(doc.uploadDate)}</small>
                             </div>
-                            <span class="status-badge ${sample.status}">${capitalizeFirst(sample.status)}</span>
+                            <span class="status-badge ${doc.status}">${capitalizeFirst(doc.status)}</span>
                         </div>
                     `).join('')}
                 </div>
@@ -561,59 +625,77 @@ function viewPatient(patientId) {
     modal.classList.add('active');
 }
 
-function editPatient(patientId) {
-    // Implementation for editing patient
+function editEmployee(employeeId) {
     showNotification('Edit functionality coming soon!', 'info');
 }
 
-function deletePatient(patientId) {
-    if (confirm('Are you sure you want to delete this patient? This action cannot be undone.')) {
-        patients = patients.filter(p => p.id !== patientId);
-        samples = samples.filter(s => s.patientId !== patientId);
-        renderPatientsTable();
-        renderPatientsGrid();
+function deleteEmployee(employeeId) {
+    if (confirm('Are you sure you want to remove this employee from onboarding? This action cannot be undone.')) {
+        employees = employees.filter(e => e.id !== employeeId);
+        documents = documents.filter(d => d.employeeId !== employeeId);
+        renderEmployeesTable();
+        renderEmployeesGrid();
         updateDashboard();
-        showNotification('Patient deleted successfully!', 'success');
+        updateDocumentStats();
+        showNotification('Employee removed successfully!', 'success');
     }
 }
 
-function viewSample(sampleId) {
-    // Implementation for viewing sample details
-    showNotification('Sample details view coming soon!', 'info');
+function viewDocument(documentId) {
+    showNotification('Document viewer coming soon!', 'info');
 }
 
-function editSample(sampleId) {
-    // Implementation for editing sample
-    showNotification('Edit functionality coming soon!', 'info');
-}
-
-function deleteSample(sampleId) {
-    if (confirm('Are you sure you want to delete this sample? This action cannot be undone.')) {
-        samples = samples.filter(s => s.id !== sampleId);
-        renderSamplesTable();
-        updateDashboard();
-        showNotification('Sample deleted successfully!', 'success');
+function approveDocument(documentId) {
+    const document = documents.find(d => d.id === documentId);
+    if (document) {
+        document.status = 'approved';
+        renderDocumentsTable();
+        showNotification('Document approved successfully!', 'success');
     }
 }
 
-function filterPatientsTable(searchTerm) {
-    const rows = document.querySelectorAll('#patients-table-body tr');
+function deleteDocument(documentId) {
+    if (confirm('Are you sure you want to delete this document? This action cannot be undone.')) {
+        const document = documents.find(d => d.id === documentId);
+        if (document) {
+            // Update employee progress
+            const employee = employees.find(e => e.id === document.employeeId);
+            if (employee) {
+                employee.documentsSubmitted = Math.max(0, employee.documentsSubmitted - 1);
+                employee.progress = Math.min(100, (employee.documentsSubmitted / employee.documentsRequired) * 100);
+                if (employee.progress < 100) {
+                    employee.status = 'in-progress';
+                }
+            }
+        }
+        
+        documents = documents.filter(d => d.id !== documentId);
+        renderDocumentsTable();
+        renderEmployeesTable();
+        updateDashboard();
+        updateDocumentStats();
+        showNotification('Document deleted successfully!', 'success');
+    }
+}
+
+function filterEmployeesTable(searchTerm) {
+    const rows = document.querySelectorAll('#employees-table-body tr');
     rows.forEach(row => {
         const text = row.textContent.toLowerCase();
         row.style.display = text.includes(searchTerm.toLowerCase()) ? '' : 'none';
     });
 }
 
-function filterSamplesTable(searchTerm) {
-    const rows = document.querySelectorAll('#samples-table-body tr');
+function filterDocumentsTable(searchTerm) {
+    const rows = document.querySelectorAll('#documents-table-body tr');
     rows.forEach(row => {
         const text = row.textContent.toLowerCase();
         row.style.display = text.includes(searchTerm.toLowerCase()) ? '' : 'none';
     });
 }
 
-function filterPatientsGrid(searchTerm) {
-    const cards = document.querySelectorAll('.patient-card');
+function filterEmployeesGrid(searchTerm) {
+    const cards = document.querySelectorAll('.employee-card');
     cards.forEach(card => {
         const text = card.textContent.toLowerCase();
         card.style.display = text.includes(searchTerm.toLowerCase()) ? '' : 'none';
@@ -661,36 +743,12 @@ function showNotification(message, type = 'info') {
 }
 
 // Utility functions
-function calculateAge(dateOfBirth) {
-    const today = new Date();
-    const birthDate = new Date(dateOfBirth);
-    let age = today.getFullYear() - birthDate.getFullYear();
-    const monthDiff = today.getMonth() - birthDate.getMonth();
-    
-    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
-        age--;
-    }
-    
-    return age;
-}
-
 function formatDate(dateString) {
     const date = new Date(dateString);
     return date.toLocaleDateString('en-US', {
         year: 'numeric',
         month: 'short',
         day: 'numeric'
-    });
-}
-
-function formatDateTime(dateString) {
-    const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', {
-        year: 'numeric',
-        month: 'short',
-        day: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit'
     });
 }
 
@@ -707,101 +765,124 @@ function capitalizeFirst(str) {
 
 // Load sample data for demonstration
 function loadSampleData() {
-    // Sample patients
-    const samplePatients = [
+    // Sample employees
+    const sampleEmployees = [
         {
-            id: 'PT001234',
-            patientId: 'PT001234',
-            firstName: 'John',
-            lastName: 'Smith',
-            dateOfBirth: '1985-03-15',
-            age: calculateAge('1985-03-15'),
-            gender: 'male',
-            studyArm: 'treatment',
-            enrollmentDate: '2024-01-15',
-            contactPhone: '(555) 123-4567',
-            status: 'active',
-            enrollmentTimestamp: new Date('2024-01-15').toISOString()
+            id: 'SII24001',
+            employeeId: 'SII24001',
+            firstName: 'Priya',
+            lastName: 'Sharma',
+            email: 'priya.sharma@seruminstitute.com',
+            phone: '+91 98765 43210',
+            dateOfBirth: '1995-06-15',
+            department: 'research',
+            position: 'Research Scientist',
+            manager: 'Dr. Rajesh Kumar',
+            startDate: '2024-01-15',
+            employmentType: 'full-time',
+            location: 'pune',
+            status: 'in-progress',
+            onboardingTimestamp: new Date('2024-01-15').toISOString(),
+            progress: 75,
+            documentsSubmitted: 6,
+            documentsRequired: 8
         },
         {
-            id: 'PT001235',
-            patientId: 'PT001235',
-            firstName: 'Sarah',
-            lastName: 'Johnson',
-            dateOfBirth: '1978-07-22',
-            age: calculateAge('1978-07-22'),
-            gender: 'female',
-            studyArm: 'control',
-            enrollmentDate: '2024-01-18',
-            contactPhone: '(555) 987-6543',
-            status: 'active',
-            enrollmentTimestamp: new Date('2024-01-18').toISOString()
+            id: 'SII24002',
+            employeeId: 'SII24002',
+            firstName: 'Arjun',
+            lastName: 'Patel',
+            email: 'arjun.patel@seruminstitute.com',
+            phone: '+91 87654 32109',
+            dateOfBirth: '1992-03-22',
+            department: 'manufacturing',
+            position: 'Production Manager',
+            manager: 'Suresh Reddy',
+            startDate: '2024-01-18',
+            employmentType: 'full-time',
+            location: 'hyderabad',
+            status: 'completed',
+            onboardingTimestamp: new Date('2024-01-18').toISOString(),
+            progress: 100,
+            documentsSubmitted: 8,
+            documentsRequired: 8
         },
         {
-            id: 'PT001236',
-            patientId: 'PT001236',
-            firstName: 'Michael',
-            lastName: 'Davis',
-            dateOfBirth: '1992-11-08',
-            age: calculateAge('1992-11-08'),
-            gender: 'male',
-            studyArm: 'placebo',
-            enrollmentDate: '2024-01-20',
-            contactPhone: '(555) 456-7890',
-            status: 'active',
-            enrollmentTimestamp: new Date('2024-01-20').toISOString()
+            id: 'SII24003',
+            employeeId: 'SII24003',
+            firstName: 'Sneha',
+            lastName: 'Gupta',
+            email: 'sneha.gupta@seruminstitute.com',
+            phone: '+91 76543 21098',
+            dateOfBirth: '1998-11-08',
+            department: 'quality',
+            position: 'QA Analyst',
+            manager: 'Dr. Meera Singh',
+            startDate: '2024-01-20',
+            employmentType: 'full-time',
+            location: 'pune',
+            status: 'in-progress',
+            onboardingTimestamp: new Date('2024-01-20').toISOString(),
+            progress: 50,
+            documentsSubmitted: 4,
+            documentsRequired: 8
         }
     ];
 
-    // Sample serum samples
-    const sampleSerumSamples = [
+    // Sample documents
+    const sampleDocuments = [
         {
-            id: 'SM001001',
-            sampleId: 'SM001001',
-            patientId: 'PT001234',
-            patientName: 'John Smith',
-            sampleType: 'serum',
-            volume: '5.0',
-            collectionDate: '2024-01-16T09:30:00',
-            storageLocation: 'Freezer A1-B2',
-            collectionNotes: 'Baseline sample collection',
-            status: 'stored',
-            collectionTimestamp: new Date('2024-01-16T09:30:00').toISOString()
+            id: 'DOC001',
+            employeeId: 'SII24001',
+            employeeName: 'Priya Sharma',
+            category: 'identity',
+            documentName: 'Aadhaar Card',
+            status: 'approved',
+            uploadDate: new Date('2024-01-16').toISOString(),
+            fileName: 'aadhaar_priya.pdf',
+            notes: 'Identity verification document'
         },
         {
-            id: 'SM001002',
-            sampleId: 'SM001002',
-            patientId: 'PT001235',
-            patientName: 'Sarah Johnson',
-            sampleType: 'serum',
-            volume: '4.5',
-            collectionDate: '2024-01-19T14:15:00',
-            storageLocation: 'Freezer A1-C3',
-            collectionNotes: 'Week 1 follow-up',
-            status: 'stored',
-            collectionTimestamp: new Date('2024-01-19T14:15:00').toISOString()
+            id: 'DOC002',
+            employeeId: 'SII24001',
+            employeeName: 'Priya Sharma',
+            category: 'education',
+            documentName: 'PhD Certificate',
+            status: 'approved',
+            uploadDate: new Date('2024-01-17').toISOString(),
+            fileName: 'phd_certificate.pdf',
+            notes: 'Doctorate in Biotechnology'
         },
         {
-            id: 'SM001003',
-            sampleId: 'SM001003',
-            patientId: 'PT001236',
-            patientName: 'Michael Davis',
-            sampleType: 'plasma',
-            volume: '6.0',
-            collectionDate: '2024-01-21T11:00:00',
-            storageLocation: 'Freezer B2-A1',
-            collectionNotes: 'Initial screening sample',
-            status: 'stored',
-            collectionTimestamp: new Date('2024-01-21T11:00:00').toISOString()
+            id: 'DOC003',
+            employeeId: 'SII24002',
+            employeeName: 'Arjun Patel',
+            category: 'employment',
+            documentName: 'Offer Letter',
+            status: 'approved',
+            uploadDate: new Date('2024-01-19').toISOString(),
+            fileName: 'offer_letter_arjun.pdf',
+            notes: 'Signed offer letter'
+        },
+        {
+            id: 'DOC004',
+            employeeId: 'SII24003',
+            employeeName: 'Sneha Gupta',
+            category: 'compliance',
+            documentName: 'Background Verification',
+            status: 'pending',
+            uploadDate: new Date('2024-01-21').toISOString(),
+            fileName: 'background_check.pdf',
+            notes: 'Pending HR review'
         }
     ];
 
-    patients = samplePatients;
-    samples = sampleSerumSamples;
+    employees = sampleEmployees;
+    documents = sampleDocuments;
 
     // Add some initial activities
-    addActivity('enrollment', 'Sample data loaded successfully');
-    addActivity('sample', 'Initial serum samples added to system');
+    addActivity('onboarding', 'Sample employee data loaded');
+    addActivity('document', 'Initial documents uploaded to system');
 }
 
 // Add CSS animations
