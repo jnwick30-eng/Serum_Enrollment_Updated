@@ -3,2166 +3,318 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Employee Information System</title>
-    <style>
-        /* Reset and Base Styles */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        :root {
-            --primary: #2563eb;
-            --primary-dark: #1d4ed8;
-            --secondary: #64748b;
-            --success: #10b981;
-            --warning: #f59e0b;
-            --error: #ef4444;
-            --neutral-50: #f8fafc;
-            --neutral-100: #f1f5f9;
-            --neutral-200: #e2e8f0;
-            --neutral-300: #cbd5e1;
-            --neutral-400: #94a3b8;
-            --neutral-500: #64748b;
-            --neutral-600: #475569;
-            --neutral-700: #334155;
-            --neutral-800: #1e293b;
-            --neutral-900: #0f172a;
-            
-            --spacing-2: 8px;
-            --spacing-4: 16px;
-            --spacing-8: 32px;
-            --radius: 6px;
-            --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
-            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
-        }
-
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            font-size: 16px;
-            line-height: 1.5;
-            color: var(--neutral-800);
-            background-color: var(--neutral-50);
-        }
-
-        /* Layout */
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: var(--spacing-4);
-        }
-
-        /* Navigation */
-        .nav {
-            background: white;
-            border-bottom: 1px solid var(--neutral-200);
-            margin-bottom: var(--spacing-8);
-            box-shadow: var(--shadow);
-        }
-
-        .nav-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: flex;
-            align-items: center;
-            padding: var(--spacing-4);
-        }
-
-        .nav-title {
-            font-size: 24px;
-            font-weight: 600;
-            color: var(--primary);
-            margin-right: var(--spacing-8);
-        }
-
-        .nav-tabs {
-            display: flex;
-            list-style: none;
-            gap: var(--spacing-2);
-        }
-
-        .nav-tab {
-            padding: var(--spacing-2) var(--spacing-4);
-            background: transparent;
-            border: none;
-            cursor: pointer;
-            border-radius: var(--radius);
-            font-size: 16px;
-            color: var(--neutral-600);
-            transition: all 0.2s;
-        }
-
-        .nav-tab:hover {
-            background: var(--neutral-100);
-            color: var(--neutral-700);
-        }
-
-        .nav-tab.active {
-            background: var(--primary);
-            color: white;
-            font-weight: 500;
-        }
-
-        /* Cards */
-        .card {
-            background: white;
-            border-radius: var(--radius);
-            box-shadow: var(--shadow);
-            overflow: hidden;
-        }
-
-        .card-header {
-            padding: var(--spacing-4);
-            border-bottom: 1px solid var(--neutral-200);
-            background: var(--neutral-50);
-        }
-
-        .card-title {
-            font-size: 24px;
-            font-weight: 600;
-            color: var(--neutral-800);
-            line-height: 1.2;
-        }
-
-        .card-content {
-            padding: var(--spacing-8);
-        }
-
-        /* Grid Layout */
-        .form-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: var(--spacing-8);
-        }
-
-        @media (max-width: 768px) {
-            .form-grid {
-                grid-template-columns: 1fr;
-                gap: var(--spacing-4);
-            }
-        }
-
-        /* Form Sections */
-        .form-section {
-            margin-bottom: var(--spacing-8);
-        }
-
-        .form-section:last-child {
-            margin-bottom: 0;
-        }
-
-        .section-title {
-            font-size: 24px;
-            font-weight: 600;
-            color: var(--neutral-800);
-            margin-bottom: var(--spacing-4);
-            padding-bottom: var(--spacing-2);
-            border-bottom: 2px solid var(--primary);
-            line-height: 1.2;
-        }
-
-        /* Form Elements */
-        .form-group {
-            margin-bottom: var(--spacing-4);
-        }
-
-        .form-label {
-            display: block;
-            font-weight: 500;
-            color: var(--neutral-700);
-            margin-bottom: var(--spacing-2);
-            font-size: 14px;
-        }
-
-        .form-input,
-        .form-select,
-        .form-textarea {
-            width: 100%;
-            padding: var(--spacing-2) 12px;
-            border: 1px solid var(--neutral-300);
-            border-radius: var(--radius);
-            font-size: 16px;
-            color: var(--neutral-800);
-            transition: all 0.2s;
-            background: white;
-        }
-
-        .form-input:focus,
-        .form-select:focus,
-        .form-textarea:focus {
-            outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgb(37 99 235 / 0.1);
-        }
-
-        .form-textarea {
-            min-height: 80px;
-            resize: vertical;
-        }
-
-        .form-helper {
-            font-size: 14px;
-            color: var(--neutral-500);
-            margin-top: var(--spacing-2);
-        }
-
-        .form-error {
-            font-size: 14px;
-            color: var(--error);
-            margin-top: var(--spacing-2);
-            display: none;
-        }
-
-        .form-group.error .form-input,
-        .form-group.error .form-select,
-        .form-group.error .form-textarea {
-            border-color: var(--error);
-        }
-
-        .form-group.error .form-error {
-            display: block;
-        }
-
-        /* Photo Upload */
-        .photo-section {
-            background: var(--neutral-50);
-            border: 2px dashed var(--neutral-300);
-            border-radius: var(--radius);
-            padding: var(--spacing-8);
-            text-align: center;
-            transition: all 0.2s;
-        }
-
-        .photo-section.active {
-            border-color: var(--primary);
-            background: rgb(37 99 235 / 0.05);
-        }
-
-        .photo-options {
-            display: flex;
-            gap: var(--spacing-4);
-            justify-content: center;
-            margin-bottom: var(--spacing-4);
-            flex-wrap: wrap;
-        }
-
-        .photo-option {
-            padding: var(--spacing-2) var(--spacing-4);
-            background: white;
-            border: 2px solid var(--neutral-300);
-            border-radius: var(--radius);
-            cursor: pointer;
-            font-size: 14px;
-            transition: all 0.2s;
-        }
-
-        .photo-option:hover {
-            border-color: var(--primary);
-        }
-
-        .photo-option.active {
-            border-color: var(--primary);
-            background: var(--primary);
-            color: white;
-        }
-
-        .photo-upload {
-            display: none;
-        }
-
-        .camera-container {
-            display: none;
-            margin-top: var(--spacing-4);
-        }
-
-        .camera-video,
-        .camera-canvas {
-            width: 100%;
-            max-width: 400px;
-            border-radius: var(--radius);
-        }
-
-        .camera-canvas {
-            display: none;
-        }
-
-        .photo-preview {
-            margin-top: var(--spacing-4);
-            display: none;
-        }
-
-        .photo-preview img {
-            max-width: 200px;
-            max-height: 200px;
-            border-radius: var(--radius);
-            box-shadow: var(--shadow);
-        }
-
-        .camera-controls {
-            margin-top: var(--spacing-4);
-            display: flex;
-            gap: var(--spacing-2);
-            justify-content: center;
-            flex-wrap: wrap;
-        }
-
-        /* Buttons */
-        .btn {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            padding: var(--spacing-2) var(--spacing-4);
-            background: var(--primary);
-            color: white;
-            border: none;
-            border-radius: var(--radius);
-            font-size: 16px;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.2s;
-            text-decoration: none;
-            gap: var(--spacing-2);
-        }
-
-        .btn:hover {
-            background: var(--primary-dark);
-            transform: translateY(-1px);
-            box-shadow: var(--shadow-lg);
-        }
-
-        .btn:disabled {
-            background: var(--neutral-300);
-            color: var(--neutral-500);
-            cursor: not-allowed;
-            transform: none;
-            box-shadow: none;
-        }
-
-        .btn-secondary {
-            background: var(--neutral-500);
-        }
-
-        .btn-secondary:hover {
-            background: var(--neutral-600);
-        }
-
-        .btn-success {
-            background: var(--success);
-        }
-
-        .btn-success:hover {
-            background: #059669;
-        }
-
-        .btn-warning {
-            background: var(--warning);
-        }
-
-        .btn-warning:hover {
-            background: #d97706;
-        }
-
-        .btn-error {
-            background: var(--error);
-        }
-
-        .btn-error:hover {
-            background: #dc2626;
-        }
-
-        .btn-sm {
-            padding: 6px 12px;
-            font-size: 14px;
-        }
-
-        /* Alerts */
-        .alert {
-            padding: var(--spacing-4);
-            border-radius: var(--radius);
-            margin-bottom: var(--spacing-4);
-            display: none;
-        }
-
-        .alert.show {
-            display: block;
-        }
-
-        .alert-success {
-            background: rgb(16 185 129 / 0.1);
-            border: 1px solid var(--success);
-            color: #047857;
-        }
-
-        .alert-error {
-            background: rgb(239 68 68 / 0.1);
-            border: 1px solid var(--error);
-            color: #b91c1c;
-        }
-
-        /* Success Panel */
-        .success-panel {
-            background: var(--neutral-50);
-            border: 1px solid var(--neutral-200);
-            border-radius: var(--radius);
-            padding: var(--spacing-8);
-            text-align: center;
-            display: none;
-        }
-
-        .success-panel.show {
-            display: block;
-        }
-
-        .success-panel h3 {
-            color: var(--success);
-            margin-bottom: var(--spacing-4);
-            font-size: 24px;
-        }
-
-        .success-actions {
-            display: flex;
-            gap: var(--spacing-4);
-            justify-content: center;
-            margin-top: var(--spacing-4);
-            flex-wrap: wrap;
-        }
-
-        /* Database Table */
-        .table-container {
-            overflow-x: auto;
-            border: 1px solid var(--neutral-200);
-            border-radius: var(--radius);
-        }
-
-        .table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 14px;
-        }
-
-        .table th,
-        .table td {
-            padding: var(--spacing-2);
-            text-align: left;
-            border-bottom: 1px solid var(--neutral-200);
-        }
-
-        .table th {
-            background: var(--neutral-50);
-            font-weight: 600;
-            color: var(--neutral-700);
-            white-space: nowrap;
-        }
-
-        .table tr:hover {
-            background: var(--neutral-50);
-        }
-
-        .table-actions {
-            display: flex;
-            gap: var(--spacing-2);
-            flex-wrap: wrap;
-        }
-
-        /* Search and Sort */
-        .db-controls {
-            display: flex;
-            gap: var(--spacing-4);
-            margin-bottom: var(--spacing-4);
-            flex-wrap: wrap;
-            align-items: center;
-        }
-
-        .search-input {
-            flex: 1;
-            min-width: 200px;
-        }
-
-        /* Side Panel */
-        .side-panel {
-            position: fixed;
-            top: 0;
-            right: -500px;
-            width: 500px;
-            height: 100vh;
-            background: white;
-            box-shadow: var(--shadow-lg);
-            z-index: 1000;
-            transition: right 0.3s ease;
-            overflow-y: auto;
-        }
-
-        .side-panel.open {
-            right: 0;
-        }
-
-        .side-panel-header {
-            padding: var(--spacing-4);
-            border-bottom: 1px solid var(--neutral-200);
-            display: flex;
-            justify-content: between;
-            align-items: center;
-        }
-
-        .side-panel-content {
-            padding: var(--spacing-4);
-        }
-
-        .side-panel-close {
-            background: none;
-            border: none;
-            font-size: 24px;
-            cursor: pointer;
-            color: var(--neutral-600);
-            padding: var(--spacing-2);
-        }
-
-        /* JSON Viewer */
-        .json-viewer {
-            background: var(--neutral-900);
-            color: #f8f8f2;
-            padding: var(--spacing-4);
-            border-radius: var(--radius);
-            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
-            font-size: 14px;
-            overflow-x: auto;
-            white-space: pre;
-            max-height: 400px;
-            overflow-y: auto;
-        }
-
-        /* Loading */
-        .loading {
-            display: none;
-            align-items: center;
-            justify-content: center;
-            padding: var(--spacing-4);
-            color: var(--neutral-500);
-        }
-
-        .loading.show {
-            display: flex;
-        }
-
-        .spinner {
-            width: 20px;
-            height: 20px;
-            border: 2px solid var(--neutral-300);
-            border-top: 2px solid var(--primary);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin-right: var(--spacing-2);
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        /* Hide inactive tabs */
-        .tab-content {
-            display: none;
-        }
-
-        .tab-content.active {
-            display: block;
-        }
-
-        /* Overlay */
-        .overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            z-index: 999;
-            display: none;
-        }
-
-        .overlay.show {
-            display: block;
-        }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            .container {
-                padding: var(--spacing-2);
-            }
-            
-            .nav-container {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: var(--spacing-4);
-            }
-            
-            .nav-tabs {
-                width: 100%;
-                justify-content: space-around;
-            }
-            
-            .card-content {
-                padding: var(--spacing-4);
-            }
-            
-            .side-panel {
-                width: 100%;
-                right: -100%;
-            }
-            
-            .success-actions {
-                flex-direction: column;
-            }
-        }
-
-        /* Accessibility */
-        .sr-only {
-            position: absolute;
-            width: 1px;
-            height: 1px;
-            padding: 0;
-            margin: -1px;
-            overflow: hidden;
-            clip: rect(0, 0, 0, 0);
-            white-space: nowrap;
-            border: 0;
-        }
-
-        /* Focus styles */
-        .btn:focus,
-        .nav-tab:focus {
-            outline: 2px solid var(--primary);
-            outline-offset: 2px;
-        }
-        
-        /* Field specific styles */
-        .aadhaar-display {
-            font-family: monospace;
-            letter-spacing: 1px;
-        }
-    </style>
+    <title>Serum Enrollment System</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
-    <!-- Navigation -->
-    <nav class="nav">
-        <div class="nav-container">
-            <h1 class="nav-title">Employee Information System</h1>
-            <ul class="nav-tabs" role="tablist">
-                <li role="presentation">
-                    <button class="nav-tab active" data-tab="form" role="tab" aria-selected="true" aria-controls="tab-form">Form</button>
-                </li>
-                <li role="presentation">
-                    <button class="nav-tab" data-tab="database" role="tab" aria-selected="false" aria-controls="tab-database">Database</button>
-                </li>
-                <li role="presentation">
-                    <button class="nav-tab" data-tab="settings" role="tab" aria-selected="false" aria-controls="tab-settings">Settings</button>
-                </li>
-            </ul>
-        </div>
-    </nav>
-
-    <!-- Main Container -->
-    <div class="container">
-        <!-- Form Tab -->
-        <div id="tab-form" class="tab-content active" role="tabpanel" aria-labelledby="form-tab">
-            <div class="card">
-                <div class="card-header">
-                    <h2 class="card-title">Employee Registration Form</h2>
+    <div class="app">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <div class="logo">
+                    <i class="fas fa-vial"></i>
+                    <h1>Serum Enrollment System</h1>
                 </div>
-                <div class="card-content">
-                    <!-- Alert Messages -->
-                    <div id="form-alert" class="alert" role="alert" aria-live="polite"></div>
-                    
-                    <!-- Loading -->
-                    <div id="form-loading" class="loading">
-                        <div class="spinner"></div>
-                        Processing...
+                <nav class="nav">
+                    <button class="nav-btn active" data-tab="dashboard">
+                        <i class="fas fa-chart-dashboard"></i>
+                        Dashboard
+                    </button>
+                    <button class="nav-btn" data-tab="enrollment">
+                        <i class="fas fa-user-plus"></i>
+                        Enrollment
+                    </button>
+                    <button class="nav-btn" data-tab="samples">
+                        <i class="fas fa-flask"></i>
+                        Samples
+                    </button>
+                    <button class="nav-btn" data-tab="patients">
+                        <i class="fas fa-users"></i>
+                        Patients
+                    </button>
+                </nav>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main">
+            <!-- Dashboard Tab -->
+            <div class="tab-content active" id="dashboard">
+                <div class="dashboard-header">
+                    <h2>Clinical Trial Dashboard</h2>
+                    <div class="date-range">
+                        <i class="fas fa-calendar"></i>
+                        <span id="current-date"></span>
                     </div>
+                </div>
 
-                    <!-- Form -->
-                    <form id="employee-form" class="form-grid" novalidate>
-                        <!-- Employee Information -->
-                        <div class="form-section">
-                            <h3 class="section-title">Employee Information</h3>
-                            
-                            <div class="form-group">
-                                <label for="comp-code" class="form-label">Company Code *</label>
-                                <input type="text" id="comp-code" name="comp-code" class="form-input" data-testid="comp-code" 
-                                       required minlength="3" maxlength="24" pattern="[A-Za-z0-9_-]+">
-                                <div class="form-helper">3-24 characters, letters, numbers, dash, underscore</div>
-                                <div class="form-error">Please enter a valid company code</div>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="emp-company" class="form-label">Company Name *</label>
-                                <input type="text" id="emp-company" name="emp-company" class="form-input" data-testid="emp-company" 
-                                       required minlength="2" maxlength="80">
-                                <div class="form-helper">2-80 characters</div>
-                                <div class="form-error">Please enter a valid company name</div>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="emp-name" class="form-label">Employee Name *</label>
-                                <input type="text" id="emp-name" name="emp-name" class="form-input" data-testid="emp-name" 
-                                       required minlength="2" maxlength="80" pattern="[A-Za-z\s]+">
-                                <div class="form-helper">2-80 letters and spaces only</div>
-                                <div class="form-error">Please enter a valid name with letters and spaces only</div>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="emp-number" class="form-label">Employee Number *</label>
-                                <input type="text" id="emp-number" name="emp-number" class="form-input" data-testid="emp-number" 
-                                       required minlength="2" maxlength="24" pattern="[A-Za-z0-9]+">
-                                <div class="form-helper">2-24 letters and numbers</div>
-                                <div class="form-error">Please enter a valid employee number</div>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="emp-designation" class="form-label">Designation *</label>
-                                <input type="text" id="emp-designation" name="emp-designation" class="form-input" data-testid="emp-designation" 
-                                       required minlength="2" maxlength="60">
-                                <div class="form-helper">2-60 characters</div>
-                                <div class="form-error">Please enter a valid designation</div>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="emp-address" class="form-label">Address *</label>
-                                <textarea id="emp-address" name="emp-address" class="form-textarea" data-testid="emp-address" 
-                                          required minlength="10" maxlength="200" rows="3"></textarea>
-                                <div class="form-helper">10-200 characters</div>
-                                <div class="form-error">Please enter a valid address (10-200 characters)</div>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="emp-phone" class="form-label">Phone Number *</label>
-                                <input type="tel" id="emp-phone" name="emp-phone" class="form-input" data-testid="emp-phone" 
-                                       required pattern="[6-9][0-9]{9}" maxlength="10">
-                                <div class="form-helper">10 digits starting with 6-9</div>
-                                <div class="form-error">Please enter a valid Indian mobile number</div>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="emp-aadhaar" class="form-label">Aadhaar Number *</label>
-                                <input type="text" id="emp-aadhaar" name="emp-aadhaar" class="form-input aadhaar-display" data-testid="emp-aadhaar" 
-                                       required pattern="[0-9]{12}" maxlength="14" placeholder="0000 0000 0000">
-                                <div class="form-helper">12 digits</div>
-                                <div class="form-error">Please enter a valid 12-digit Aadhaar number</div>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="emp-dob" class="form-label">Date of Birth *</label>
-                                <input type="date" id="emp-dob" name="emp-dob" class="form-input" data-testid="emp-dob" required>
-                                <div class="form-helper">Age must be between 18-70</div>
-                                <div class="form-error">Please enter a valid date of birth</div>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="emp-doj" class="form-label">Date of Joining *</label>
-                                <input type="date" id="emp-doj" name="emp-doj" class="form-input" data-testid="emp-doj" required>
-                                <div class="form-helper">Must be after date of birth and not in future</div>
-                                <div class="form-error">Please enter a valid date of joining</div>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="emp-marital" class="form-label">Marital Status *</label>
-                                <select id="emp-marital" name="emp-marital" class="form-select" data-testid="emp-marital" required>
-                                    <option value="">Select status</option>
-                                    <option value="Single">Single</option>
-                                    <option value="Married">Married</option>
-                                    <option value="Other">Other</option>
-                                </select>
-                                <div class="form-error">Please select a marital status</div>
-                            </div>
+                <div class="stats-grid">
+                    <div class="stat-card primary">
+                        <div class="stat-icon">
+                            <i class="fas fa-users"></i>
                         </div>
-
-                        <!-- Emergency Contact -->
-                        <div class="form-section">
-                            <h3 class="section-title">Emergency Contact</h3>
-                            
-                            <div class="form-group">
-                                <label for="emg-name" class="form-label">Contact Name *</label>
-                                <input type="text" id="emg-name" name="emg-name" class="form-input" data-testid="emg-name" 
-                                       required minlength="2" maxlength="80" pattern="[A-Za-z\s]+">
-                                <div class="form-helper">2-80 letters and spaces only</div>
-                                <div class="form-error">Please enter a valid contact name</div>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="emg-number" class="form-label">Contact Number *</label>
-                                <input type="tel" id="emg-number" name="emg-number" class="form-input" data-testid="emg-number" 
-                                       required pattern="[6-9][0-9]{9}" maxlength="10">
-                                <div class="form-helper">10 digits starting with 6-9</div>
-                                <div class="form-error">Please enter a valid Indian mobile number</div>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="emg-rel" class="form-label">Relationship *</label>
-                                <input type="text" id="emg-rel" name="emg-rel" class="form-input" data-testid="emg-rel" 
-                                       required minlength="2" maxlength="40">
-                                <div class="form-helper">2-40 characters</div>
-                                <div class="form-error">Please enter a valid relationship</div>
-                            </div>
-
-                            <!-- Banking Information -->
-                            <h3 class="section-title" style="margin-top: var(--spacing-8);">Banking Information</h3>
-                            
-                            <div class="form-group">
-                                <label for="bank-name" class="form-label">Bank Name *</label>
-                                <input type="text" id="bank-name" name="bank-name" class="form-input" data-testid="bank-name" 
-                                       required minlength="2" maxlength="80">
-                                <div class="form-helper">2-80 characters</div>
-                                <div class="form-error">Please enter a valid bank name</div>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="bank-account" class="form-label">Account Number *</label>
-                                <input type="text" id="bank-account" name="bank-account" class="form-input" data-testid="bank-account" 
-                                       required pattern="[0-9]{9,18}">
-                                <div class="form-helper">9-18 digits</div>
-                                <div class="form-error">Please enter a valid account number</div>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="bank-branch" class="form-label">Branch *</label>
-                                <input type="text" id="bank-branch" name="bank-branch" class="form-input" data-testid="bank-branch" 
-                                       required minlength="2" maxlength="80">
-                                <div class="form-helper">2-80 characters</div>
-                                <div class="form-error">Please enter a valid branch name</div>
-                            </div>
-
-                            <!-- Health Information -->
-                            <h3 class="section-title" style="margin-top: var(--spacing-8);">Health Information</h3>
-                            
-                            <div class="form-group">
-                                <label for="health-allergies" class="form-label">Allergies</label>
-                                <textarea id="health-allergies" name="health-allergies" class="form-textarea" data-testid="health-allergies" 
-                                          maxlength="200" rows="3" placeholder="None"></textarea>
-                                <div class="form-helper">Optional, up to 200 characters</div>
-                                <div class="form-error">Maximum 200 characters allowed</div>
-                            </div>
+                        <div class="stat-content">
+                            <h3 id="total-patients">0</h3>
+                            <p>Total Patients</p>
                         </div>
-
-                        <!-- Photo Section -->
-                        <div class="form-section" style="grid-column: 1 / -1;">
-                            <h3 class="section-title">Photo</h3>
-                            
-                            <div class="photo-section">
-                                <div class="photo-options">
-                                    <button type="button" class="photo-option" data-option="upload">Upload from Device</button>
-                                    <button type="button" class="photo-option" data-option="camera">Capture from Camera</button>
-                                </div>
-
-                                <input type="file" id="photo-upload" class="photo-upload" accept="image/jpeg,image/png" data-testid="photo-upload">
-                                
-                                <div id="camera-container" class="camera-container">
-                                    <video id="camera-video" class="camera-video" autoplay></video>
-                                    <canvas id="camera-canvas" class="camera-canvas"></canvas>
-                                    <div class="camera-controls">
-                                        <button type="button" id="capture-btn" class="btn">Capture</button>
-                                        <button type="button" id="retake-btn" class="btn btn-secondary" style="display: none;">Retake</button>
-                                    </div>
-                                </div>
-
-                                <div id="photo-preview" class="photo-preview">
-                                    <img id="preview-img" src="" alt="Photo preview">
-                                </div>
-                            </div>
+                    </div>
+                    <div class="stat-card success">
+                        <div class="stat-icon">
+                            <i class="fas fa-flask"></i>
                         </div>
-
-                        <!-- Submit Button -->
-                        <div style="grid-column: 1 / -1; text-align: center; margin-top: var(--spacing-8);">
-                            <button type="button" id="fill-demo" class="btn btn-secondary" style="margin-right: var(--spacing-4);">Fill Demo Data</button>
-                            <button type="submit" id="submit-btn" class="btn" data-testid="submit-btn" disabled>Submit Application</button>
+                        <div class="stat-content">
+                            <h3 id="total-samples">0</h3>
+                            <p>Serum Samples</p>
                         </div>
-                    </form>
+                    </div>
+                    <div class="stat-card warning">
+                        <div class="stat-icon">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3 id="pending-samples">0</h3>
+                            <p>Pending Collection</p>
+                        </div>
+                    </div>
+                    <div class="stat-card info">
+                        <div class="stat-icon">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3 id="completion-rate">0%</h3>
+                            <p>Completion Rate</p>
+                        </div>
+                    </div>
+                </div>
 
-                    <!-- Success Panel -->
-                    <div id="success-panel" class="success-panel">
-                        <h3>✅ Application Submitted Successfully!</h3>
-                        <div id="success-summary"></div>
-                        <div class="success-actions">
-                            <button type="button" id="download-pdf-btn" class="btn btn-success">Download PDF</button>
-                            <button type="button" id="save-db-btn" class="btn btn-warning">Save to Database</button>
-                            <button type="button" id="new-entry-btn" class="btn">New Entry</button>
+                <div class="dashboard-grid">
+                    <div class="chart-container">
+                        <h3>Enrollment Progress</h3>
+                        <div class="progress-chart">
+                            <canvas id="enrollmentChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="recent-activity">
+                        <h3>Recent Activity</h3>
+                        <div class="activity-list" id="activity-list">
+                            <!-- Activity items will be populated by JavaScript -->
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
 
-        <!-- Database Tab -->
-        <div id="tab-database" class="tab-content" role="tabpanel" aria-labelledby="database-tab">
-            <div class="card">
-                <div class="card-header">
-                    <h2 class="card-title">Employee Database</h2>
+            <!-- Enrollment Tab -->
+            <div class="tab-content" id="enrollment">
+                <div class="section-header">
+                    <h2>Patient Enrollment</h2>
+                    <button class="btn btn-primary" id="new-enrollment-btn">
+                        <i class="fas fa-plus"></i>
+                        New Enrollment
+                    </button>
                 </div>
-                <div class="card-content">
-                    <div class="db-controls">
-                        <input type="text" id="search-input" class="form-input search-input" placeholder="Search employees...">
-                        <select id="sort-select" class="form-select">
-                            <option value="createdAt">Sort by Created</option>
-                            <option value="emp-name">Sort by Name</option>
-                            <option value="emp-company">Sort by Company</option>
-                            <option value="emp-designation">Sort by Designation</option>
-                        </select>
-                        <button type="button" id="export-btn" class="btn btn-secondary">Export JSON</button>
-                        <button type="button" id="import-btn" class="btn btn-secondary">Import JSON</button>
-                        <input type="file" id="import-file" accept=".json" style="display: none;">
-                    </div>
 
+                <div class="enrollment-form-container" id="enrollment-form-container" style="display: none;">
+                    <form class="enrollment-form" id="enrollment-form">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="patient-id">Patient ID</label>
+                                <input type="text" id="patient-id" name="patientId" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="first-name">First Name</label>
+                                <input type="text" id="first-name" name="firstName" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="last-name">Last Name</label>
+                                <input type="text" id="last-name" name="lastName" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="date-of-birth">Date of Birth</label>
+                                <input type="date" id="date-of-birth" name="dateOfBirth" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="gender">Gender</label>
+                                <select id="gender" name="gender" required>
+                                    <option value="">Select Gender</option>
+                                    <option value="male">Male</option>
+                                    <option value="female">Female</option>
+                                    <option value="other">Other</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="enrollment-date">Enrollment Date</label>
+                                <input type="date" id="enrollment-date" name="enrollmentDate" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="study-arm">Study Arm</label>
+                                <select id="study-arm" name="studyArm" required>
+                                    <option value="">Select Study Arm</option>
+                                    <option value="treatment">Treatment</option>
+                                    <option value="control">Control</option>
+                                    <option value="placebo">Placebo</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="contact-phone">Contact Phone</label>
+                                <input type="tel" id="contact-phone" name="contactPhone">
+                            </div>
+                        </div>
+                        <div class="form-actions">
+                            <button type="button" class="btn btn-secondary" id="cancel-enrollment">Cancel</button>
+                            <button type="submit" class="btn btn-primary">Enroll Patient</button>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="enrollment-list">
+                    <div class="search-bar">
+                        <i class="fas fa-search"></i>
+                        <input type="text" placeholder="Search patients..." id="patient-search">
+                    </div>
                     <div class="table-container">
-                        <table class="table">
+                        <table class="data-table">
                             <thead>
                                 <tr>
-                                    <th>Employee Number</th>
-                                    <th>Employee Name</th>
-                                    <th>Company</th>
-                                    <th>Designation</th>
-                                    <th>Created At</th>
+                                    <th>Patient ID</th>
+                                    <th>Name</th>
+                                    <th>Age</th>
+                                    <th>Gender</th>
+                                    <th>Study Arm</th>
+                                    <th>Enrollment Date</th>
+                                    <th>Status</th>
                                     <th>Actions</th>
                                 </tr>
                             </thead>
-                            <tbody id="records-table">
-                                <!-- Records will be populated here -->
+                            <tbody id="patients-table-body">
+                                <!-- Patient rows will be populated by JavaScript -->
                             </tbody>
                         </table>
                     </div>
+                </div>
+            </div>
 
-                    <div id="no-records" style="text-align: center; padding: var(--spacing-8); color: var(--neutral-500); display: none;">
-                        No records found. Create your first employee record using the Form tab.
+            <!-- Samples Tab -->
+            <div class="tab-content" id="samples">
+                <div class="section-header">
+                    <h2>Serum Sample Management</h2>
+                    <button class="btn btn-primary" id="new-sample-btn">
+                        <i class="fas fa-plus"></i>
+                        New Sample
+                    </button>
+                </div>
+
+                <div class="sample-form-container" id="sample-form-container" style="display: none;">
+                    <form class="sample-form" id="sample-form">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="sample-patient-id">Patient ID</label>
+                                <select id="sample-patient-id" name="patientId" required>
+                                    <option value="">Select Patient</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="sample-id">Sample ID</label>
+                                <input type="text" id="sample-id" name="sampleId" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="collection-date">Collection Date</label>
+                                <input type="datetime-local" id="collection-date" name="collectionDate" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="sample-type">Sample Type</label>
+                                <select id="sample-type" name="sampleType" required>
+                                    <option value="">Select Type</option>
+                                    <option value="serum">Serum</option>
+                                    <option value="plasma">Plasma</option>
+                                    <option value="whole-blood">Whole Blood</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="volume">Volume (mL)</label>
+                                <input type="number" id="volume" name="volume" step="0.1" min="0" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="storage-location">Storage Location</label>
+                                <input type="text" id="storage-location" name="storageLocation" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="collection-notes">Collection Notes</label>
+                                <textarea id="collection-notes" name="collectionNotes" rows="3"></textarea>
+                            </div>
+                        </div>
+                        <div class="form-actions">
+                            <button type="button" class="btn btn-secondary" id="cancel-sample">Cancel</button>
+                            <button type="submit" class="btn btn-primary">Add Sample</button>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="samples-list">
+                    <div class="search-bar">
+                        <i class="fas fa-search"></i>
+                        <input type="text" placeholder="Search samples..." id="sample-search">
+                    </div>
+                    <div class="table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Sample ID</th>
+                                    <th>Patient ID</th>
+                                    <th>Patient Name</th>
+                                    <th>Type</th>
+                                    <th>Volume (mL)</th>
+                                    <th>Collection Date</th>
+                                    <th>Storage Location</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="samples-table-body">
+                                <!-- Sample rows will be populated by JavaScript -->
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
-        </div>
 
-        <!-- Settings Tab -->
-        <div id="tab-settings" class="tab-content" role="tabpanel" aria-labelledby="settings-tab">
-            <div class="card">
-                <div class="card-header">
-                    <h2 class="card-title">Settings</h2>
+            <!-- Patients Tab -->
+            <div class="tab-content" id="patients">
+                <div class="section-header">
+                    <h2>Patient Management</h2>
                 </div>
-                <div class="card-content">
-                    <div class="form-section">
-                        <h3 class="section-title">PDF Storage</h3>
-                        <div class="form-group">
-                            <label class="form-label">
-                                <input type="checkbox" id="allow-pdf-storage"> Allow saving PDF content into records
-                            </label>
-                            <div class="form-helper">When enabled, PDF files will be downloaded and stored as base64 in the database</div>
-                        </div>
-                    </div>
 
-                    <div class="form-section">
-                        <h3 class="section-title">Database Management</h3>
-                        <div style="display: flex; gap: var(--spacing-4); flex-wrap: wrap;">
-                            <button type="button" id="clear-db-btn" class="btn btn-error">Clear All Records</button>
-                            <button type="button" id="export-db-btn" class="btn btn-secondary">Export Database</button>
-                            <button type="button" id="import-db-btn" class="btn btn-secondary">Import Database</button>
-                        </div>
-                        <input type="file" id="import-db-file" accept=".json" style="display: none;">
+                <div class="patients-overview">
+                    <div class="search-bar">
+                        <i class="fas fa-search"></i>
+                        <input type="text" placeholder="Search patients..." id="patients-overview-search">
                     </div>
-
-                    <div class="form-section">
-                        <h3 class="section-title">Storage Usage</h3>
-                        <div id="storage-info" style="font-family: monospace; background: var(--neutral-50); padding: var(--spacing-4); border-radius: var(--radius);">
-                            <!-- Storage info will be populated here -->
-                        </div>
-                    </div>
-
-                    <div class="form-section">
-                        <h3 class="section-title">Demo Data</h3>
-                        <button type="button" id="demo-record-btn" class="btn btn-secondary">Insert Demo Record</button>
-                        <div class="form-helper">Adds a sample employee record to test database functionality</div>
+                    
+                    <div class="patients-grid" id="patients-grid">
+                        <!-- Patient cards will be populated by JavaScript -->
                     </div>
                 </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modal for patient details -->
+    <div class="modal" id="patient-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Patient Details</h3>
+                <button class="modal-close" id="close-patient-modal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body" id="patient-modal-body">
+                <!-- Patient details will be populated by JavaScript -->
             </div>
         </div>
     </div>
 
-    <!-- Side Panel -->
-    <div id="side-panel" class="side-panel">
-        <div class="side-panel-header">
-            <h3 id="side-panel-title">Employee Details</h3>
-            <button type="button" id="side-panel-close" class="side-panel-close">&times;</button>
-        </div>
-        <div id="side-panel-content" class="side-panel-content">
-            <!-- Content will be populated dynamically -->
-        </div>
-    </div>
-
-    <!-- Overlay -->
-    <div id="overlay" class="overlay"></div>
-
-    <script>
-        // Global state
-        let currentEmployeeData = null;
-        let cameraStream = null;
-        let lastSubmissionCooldown = 0;
-
-        // Initialize application
-        document.addEventListener('DOMContentLoaded', function() {
-            initializeTabs();
-            initializeForm();
-            initializeCamera();
-            initializeDatabase();
-            initializeSettings();
-            updateStorageInfo();
-            
-            // Initialize database if empty
-            if (!localStorage.getItem('eis.db')) {
-                dbSave({
-                    meta: {
-                        version: 1,
-                        allowPdfBlob: false,
-                        storageBytes: 0
-                    },
-                    records: []
-                });
-            }
-        });
-
-        // Utility Functions
-        function validateText(value, minLength = 2, maxLength = 80, pattern = null) {
-            if (!value || value.trim().length < minLength || value.trim().length > maxLength) {
-                return false;
-            }
-            if (pattern && !new RegExp(pattern).test(value.trim())) {
-                return false;
-            }
-            return true;
-        }
-
-        function validatePhoneIN(phone) {
-            return /^[6-9][0-9]{9}$/.test(phone);
-        }
-
-        function validateAadhaar(aadhaar) {
-            const cleaned = aadhaar.replace(/\s/g, '');
-            return /^[0-9]{12}$/.test(cleaned);
-        }
-
-        function validateAccount(account) {
-            return /^[0-9]{9,18}$/.test(account);
-        }
-
-        function formatAadhaarForDisplay(value) {
-            const cleaned = value.replace(/\s/g, '');
-            const match = cleaned.match(/^(\d{0,4})(\d{0,4})(\d{0,4})$/);
-            if (match) {
-                return [match[1], match[2], match[3]].filter(Boolean).join(' ');
-            }
-            return cleaned;
-        }
-
-        function toBase64(file) {
-            return new Promise((resolve, reject) => {
-                const reader = new FileReader();
-                reader.readAsDataURL(file);
-                reader.onload = () => resolve(reader.result);
-                reader.onerror = error => reject(error);
-            });
-        }
-
-        function bytesApprox(data) {
-            return new Blob([JSON.stringify(data)]).size;
-        }
-
-        function generateUUID() {
-            return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-                const r = Math.random() * 16 | 0;
-                const v = c == 'x' ? r : (r & 0x3 | 0x8);
-                return v.toString(16);
-            });
-        }
-
-        // Database Functions
-        function dbLoad() {
-            const data = localStorage.getItem('eis.db');
-            return data ? JSON.parse(data) : null;
-        }
-
-        function dbSave(data) {
-            data.meta.storageBytes = bytesApprox(data);
-            localStorage.setItem('eis.db', JSON.stringify(data));
-        }
-
-        function dbAdd(record) {
-            const db = dbLoad();
-            record.id = generateUUID();
-            record.createdAt = new Date().toISOString();
-            record.updatedAt = record.createdAt;
-            db.records.push(record);
-            dbSave(db);
-            return record.id;
-        }
-
-        function dbUpdate(id, updates) {
-            const db = dbLoad();
-            const index = db.records.findIndex(r => r.id === id);
-            if (index !== -1) {
-                db.records[index] = { ...db.records[index], ...updates };
-                db.records[index].updatedAt = new Date().toISOString();
-                dbSave(db);
-                return true;
-            }
-            return false;
-        }
-
-        function dbDelete(id) {
-            const db = dbLoad();
-            const index = db.records.findIndex(r => r.id === id);
-            if (index !== -1) {
-                db.records.splice(index, 1);
-                dbSave(db);
-                return true;
-            }
-            return false;
-        }
-
-        function dbExport() {
-            const db = dbLoad();
-            const dataStr = JSON.stringify(db, null, 2);
-            const dataBlob = new Blob([dataStr], {type: 'application/json'});
-            const url = URL.createObjectURL(dataBlob);
-            const link = document.createElement('a');
-            link.href = url;
-            link.download = 'eis-database.json';
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            URL.revokeObjectURL(url);
-
-            showAlert('success', 'Database exported successfully. Please note that this file contains personal data.');
-        }
-
-        function dbImport(file, merge = false) {
-            return new Promise((resolve, reject) => {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    try {
-                        const importData = JSON.parse(e.target.result);
-                        
-                        // Validate structure
-                        if (!importData.meta || !Array.isArray(importData.records)) {
-                            throw new Error('Invalid database format');
-                        }
-
-                        if (merge) {
-                            const currentDb = dbLoad();
-                            // Merge records, avoiding duplicates by emp.number
-                            const existingNumbers = new Set(currentDb.records.map(r => r.placeholders['<emp.number>']));
-                            const newRecords = importData.records.filter(r => 
-                                !existingNumbers.has(r.placeholders['<emp.number>'])
-                            );
-                            currentDb.records.push(...newRecords);
-                            dbSave(currentDb);
-                        } else {
-                            dbSave(importData);
-                        }
-
-                        resolve(importData.records.length);
-                    } catch (error) {
-                        reject(error);
-                    }
-                };
-                reader.onerror = reject;
-                reader.readAsText(file);
-            });
-        }
-
-        // Tab Management
-        function initializeTabs() {
-            const tabs = document.querySelectorAll('.nav-tab');
-            const tabContents = document.querySelectorAll('.tab-content');
-
-            tabs.forEach(tab => {
-                tab.addEventListener('click', () => {
-                    const targetTab = tab.getAttribute('data-tab');
-                    
-                    // Update tab states
-                    tabs.forEach(t => {
-                        t.classList.remove('active');
-                        t.setAttribute('aria-selected', 'false');
-                    });
-                    tab.classList.add('active');
-                    tab.setAttribute('aria-selected', 'true');
-
-                    // Update content states
-                    tabContents.forEach(content => {
-                        content.classList.remove('active');
-                    });
-                    document.getElementById(`tab-${targetTab}`).classList.add('active');
-
-                    // Load data for database tab
-                    if (targetTab === 'database') {
-                        loadDatabaseRecords();
-                    } else if (targetTab === 'settings') {
-                        updateStorageInfo();
-                    }
-                });
-            });
-        }
-
-        // Form Management
-        function initializeForm() {
-            const form = document.getElementById('employee-form');
-            const submitBtn = document.getElementById('submit-btn');
-            const fillDemoBtn = document.getElementById('fill-demo');
-
-            // Real-time validation
-            const inputs = form.querySelectorAll('input, select, textarea');
-            inputs.forEach(input => {
-                input.addEventListener('input', () => handleInputValidation(input));
-                input.addEventListener('blur', () => handleInputValidation(input));
-            });
-
-            // Aadhaar formatting
-            const aadhaarInput = document.getElementById('emp-aadhaar');
-            aadhaarInput.addEventListener('input', function(e) {
-                const value = e.target.value.replace(/\D/g, '');
-                e.target.value = formatAadhaarForDisplay(value);
-            });
-
-            // Phone number formatting
-            const phoneInputs = document.querySelectorAll('input[type="tel"]');
-            phoneInputs.forEach(input => {
-                input.addEventListener('input', function(e) {
-                    e.target.value = e.target.value.replace(/\D/g, '');
-                });
-            });
-
-            // Account number formatting
-            const accountInput = document.getElementById('bank-account');
-            accountInput.addEventListener('input', function(e) {
-                e.target.value = e.target.value.replace(/\D/g, '');
-            });
-
-            // Form submission
-            form.addEventListener('submit', handleSubmit);
-
-            // Fill demo data
-            fillDemoBtn.addEventListener('click', fillDemoData);
-
-            // Photo handling
-            initializePhotoHandling();
-
-            // Success panel buttons
-            document.getElementById('download-pdf-btn').addEventListener('click', handleDownloadPdf);
-            document.getElementById('save-db-btn').addEventListener('click', handleSaveToDatabase);
-            document.getElementById('new-entry-btn').addEventListener('click', resetForm);
-        }
-
-        function handleInputValidation(input) {
-            const group = input.closest('.form-group');
-            const value = input.value.trim();
-            let isValid = true;
-            let errorMessage = '';
-
-            // Check required fields
-            if (input.hasAttribute('required') && !value) {
-                isValid = false;
-                errorMessage = 'This field is required';
-            } else if (value) {
-                // Specific validations
-                switch (input.id) {
-                    case 'comp-code':
-                        if (!validateText(value, 3, 24, '^[A-Za-z0-9_-]+$')) {
-                            isValid = false;
-                            errorMessage = 'Must be 3-24 characters (letters, numbers, dash, underscore only)';
-                        }
-                        break;
-                    
-                    case 'emp-company':
-                        if (!validateText(value, 2, 80)) {
-                            isValid = false;
-                            errorMessage = 'Must be 2-80 characters';
-                        }
-                        break;
-                    
-                    case 'emp-name':
-                    case 'emg-name':
-                        if (!validateText(value, 2, 80, '^[A-Za-z\\s]+$')) {
-                            isValid = false;
-                            errorMessage = 'Must be 2-80 characters (letters and spaces only)';
-                        }
-                        break;
-                    
-                    case 'emp-number':
-                        if (!validateText(value, 2, 24, '^[A-Za-z0-9]+$')) {
-                            isValid = false;
-                            errorMessage = 'Must be 2-24 characters (letters and numbers only)';
-                        }
-                        break;
-                    
-                    case 'emp-designation':
-                        if (!validateText(value, 2, 60)) {
-                            isValid = false;
-                            errorMessage = 'Must be 2-60 characters';
-                        }
-                        break;
-                    
-                    case 'emp-address':
-                        if (!validateText(value, 10, 200)) {
-                            isValid = false;
-                            errorMessage = 'Must be 10-200 characters';
-                        }
-                        break;
-                    
-                    case 'emp-phone':
-                    case 'emg-number':
-                        if (!validatePhoneIN(value)) {
-                            isValid = false;
-                            errorMessage = 'Must be 10 digits starting with 6-9';
-                        }
-                        break;
-                    
-                    case 'emp-aadhaar':
-                        if (!validateAadhaar(value)) {
-                            isValid = false;
-                            errorMessage = 'Must be exactly 12 digits';
-                        }
-                        break;
-                    
-                    case 'emp-dob':
-                        const dob = new Date(value);
-                        const today = new Date();
-                        const age = today.getFullYear() - dob.getFullYear();
-                        if (dob > today || age < 18 || age > 70) {
-                            isValid = false;
-                            errorMessage = 'Invalid date or age must be 18-70';
-                        }
-                        break;
-                    
-                    case 'emp-doj':
-                        const doj = new Date(value);
-                        const dobValue = document.getElementById('emp-dob').value;
-                        const dobDate = new Date(dobValue);
-                        const currentDate = new Date();
-                        if (doj > currentDate || (dobValue && doj < dobDate)) {
-                            isValid = false;
-                            errorMessage = 'Must be after date of birth and not in future';
-                        }
-                        break;
-                    
-                    case 'emg-rel':
-                        if (!validateText(value, 2, 40)) {
-                            isValid = false;
-                            errorMessage = 'Must be 2-40 characters';
-                        }
-                        break;
-                    
-                    case 'bank-name':
-                    case 'bank-branch':
-                        if (!validateText(value, 2, 80)) {
-                            isValid = false;
-                            errorMessage = 'Must be 2-80 characters';
-                        }
-                        break;
-                    
-                    case 'bank-account':
-                        if (!validateAccount(value)) {
-                            isValid = false;
-                            errorMessage = 'Must be 9-18 digits';
-                        }
-                        break;
-                    
-                    case 'health-allergies':
-                        if (value.length > 200) {
-                            isValid = false;
-                            errorMessage = 'Maximum 200 characters allowed';
-                        }
-                        break;
-                }
-            }
-
-            // Update UI
-            if (isValid) {
-                group.classList.remove('error');
-            } else {
-                group.classList.add('error');
-                group.querySelector('.form-error').textContent = errorMessage;
-            }
-
-            // Check overall form validity
-            checkFormValidity();
-        }
-
-        function checkFormValidity() {
-            const form = document.getElementById('employee-form');
-            const submitBtn = document.getElementById('submit-btn');
-            const requiredFields = form.querySelectorAll('[required]');
-            let isFormValid = true;
-
-            requiredFields.forEach(field => {
-                const group = field.closest('.form-group');
-                if (group.classList.contains('error') || !field.value.trim()) {
-                    isFormValid = false;
-                }
-            });
-
-            submitBtn.disabled = !isFormValid;
-        }
-
-        function handleSubmit(e) {
-            e.preventDefault();
-
-            // Check cooldown
-            const now = Date.now();
-            if (now - lastSubmissionCooldown < 2000) {
-                showAlert('error', 'Please wait 2 seconds between submissions');
-                return;
-            }
-            lastSubmissionCooldown = now;
-
-            const form = document.getElementById('employee-form');
-            const formData = new FormData(form);
-            
-            // Build JSON payload
-            const payload = {};
-            
-            // Map form fields to exact placeholder keys
-            payload['<comp.code>'] = formData.get('comp-code').trim();
-            payload['<emp.company>'] = formData.get('emp-company').trim();
-            payload['<emp.name>'] = formData.get('emp-name').trim();
-            payload['<emp.number>'] = formData.get('emp-number').trim();
-            payload['<emp.designation>'] = formData.get('emp-designation').trim();
-            payload['<emp.address>'] = formData.get('emp-address').trim();
-            payload['<emp.phone>'] = formData.get('emp-phone').replace(/\D/g, '');
-            payload['<emp.aadhar>'] = formData.get('emp-aadhaar').replace(/\s/g, '');
-            payload['<emp.dob>'] = formData.get('emp-dob');
-            payload['<emp.doj>'] = formData.get('emp-doj');
-            payload['<emp.marital>'] = formData.get('emp-marital');
-            payload['<emg.name>'] = formData.get('emg-name').trim();
-            payload['<emg.number>'] = formData.get('emg-number').replace(/\D/g, '');
-            payload['<emg.rel>'] = formData.get('emg-rel').trim();
-            payload['<bank.name>'] = formData.get('bank-name').trim();
-            payload['<bank.account>'] = formData.get('bank-account').replace(/\s/g, '');
-            payload['<bank.branch>'] = formData.get('bank-branch').trim();
-            
-            // Handle allergies - set to "None" if empty
-            const allergies = formData.get('health-allergies').trim();
-            payload['<health.allergies>'] = allergies || 'None';
-            
-            // Handle photo
-            const photoPreview = document.getElementById('preview-img');
-            payload['<photo>'] = photoPreview.src || '';
-
-            // Store for later use
-            currentEmployeeData = payload;
-
-            // Show loading
-            document.getElementById('form-loading').classList.add('show');
-            document.getElementById('submit-btn').disabled = true;
-
-            // Submit to backend
-            fetch('http://127.0.0.1:5000/process-form', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(payload)
-            })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error(`Server error: ${response.status}`);
-                }
-                return response.text();
-            })
-            .then(result => {
-                // Hide loading
-                document.getElementById('form-loading').classList.remove('show');
-                
-                // Show success panel
-                showSuccessPanel(payload);
-                
-                // Hide form
-                form.style.display = 'none';
-                
-                showAlert('success', 'Form submitted successfully!');
-            })
-            .catch(error => {
-                console.error('Submission error:', error);
-                
-                // Hide loading
-                document.getElementById('form-loading').classList.remove('show');
-                document.getElementById('submit-btn').disabled = false;
-                
-                showAlert('error', `Submission failed: ${error.message}`);
-            });
-        }
-
-        function showSuccessPanel(data) {
-            const panel = document.getElementById('success-panel');
-            const summary = document.getElementById('success-summary');
-            
-            summary.innerHTML = `
-                <p><strong>Employee:</strong> ${data['<emp.name>']} (${data['<emp.number>']})</p>
-                <p><strong>Company:</strong> ${data['<emp.company>']}</p>
-                <p><strong>Designation:</strong> ${data['<emp.designation>']}</p>
-            `;
-            
-            panel.classList.add('show');
-        }
-
-        function handleDownloadPdf() {
-            if (!currentEmployeeData) return;
-            
-            const empId = currentEmployeeData['<emp.number>'];
-            const empName = currentEmployeeData['<emp.name>'];
-            const url = `http://127.0.0.1:5000/EmployeeData/${encodeURIComponent(empId)}/${encodeURIComponent(empName)}`;
-            
-            window.open(url, '_blank');
-        }
-
-        function handleSaveToDatabase() {
-            if (!currentEmployeeData) return;
-            
-            const record = {
-                placeholders: { ...currentEmployeeData },
-                pdf: {
-                    url: `/EmployeeData/${currentEmployeeData['<emp.number>']}/${currentEmployeeData['<emp.name>']}`,
-                    fetchedAt: new Date().toISOString(),
-                    blobBase64: null
-                }
-            };
-            
-            const recordId = dbAdd(record);
-            showAlert('success', `Record saved to database with ID: ${recordId}`);
-            
-            // Optionally download and save PDF if enabled
-            const db = dbLoad();
-            if (db.meta.allowPdfBlob) {
-                fetchPdfAsBase64(record.pdf.url, recordId);
-            }
-        }
-
-        function fetchPdfAsBase64(pdfUrl, recordId) {
-            const fullUrl = `http://127.0.0.1:5000${pdfUrl}`;
-            
-            fetch(fullUrl)
-                .then(response => response.blob())
-                .then(blob => toBase64(blob))
-                .then(base64 => {
-                    dbUpdate(recordId, {
-                        'pdf.blobBase64': base64
-                    });
-                    showAlert('success', 'PDF content saved to database');
-                })
-                .catch(error => {
-                    console.error('PDF fetch error:', error);
-                    showAlert('error', 'Failed to fetch PDF content');
-                });
-        }
-
-        function resetForm() {
-            const form = document.getElementById('employee-form');
-            const successPanel = document.getElementById('success-panel');
-            
-            form.reset();
-            form.style.display = 'grid';
-            successPanel.classList.remove('show');
-            
-            // Clear photo preview
-            document.getElementById('preview-img').src = '';
-            document.getElementById('photo-preview').style.display = 'none';
-            
-            // Reset photo options
-            document.querySelectorAll('.photo-option').forEach(opt => opt.classList.remove('active'));
-            document.getElementById('camera-container').style.display = 'none';
-            
-            // Clear validation states
-            document.querySelectorAll('.form-group').forEach(group => {
-                group.classList.remove('error');
-            });
-            
-            document.getElementById('submit-btn').disabled = true;
-            currentEmployeeData = null;
-            
-            showAlert('success', 'Form reset successfully');
-        }
-
-        function fillDemoData() {
-            const form = document.getElementById('employee-form');
-            
-            // Fill with demo data
-            form.querySelector('#comp-code').value = 'DEMO-001';
-            form.querySelector('#emp-company').value = 'Demo Corporation Ltd';
-            form.querySelector('#emp-name').value = 'John Doe';
-            form.querySelector('#emp-number').value = 'EMP001';
-            form.querySelector('#emp-designation').value = 'Software Developer';
-            form.querySelector('#emp-address').value = '123 Demo Street, Demo City, Demo State - 123456';
-            form.querySelector('#emp-phone').value = '9876543210';
-            form.querySelector('#emp-aadhaar').value = '1234 5678 9012';
-            form.querySelector('#emp-dob').value = '1990-01-01';
-            form.querySelector('#emp-doj').value = '2020-01-01';
-            form.querySelector('#emp-marital').value = 'Single';
-            form.querySelector('#emg-name').value = 'Jane Doe';
-            form.querySelector('#emg-number').value = '9876543211';
-            form.querySelector('#emg-rel').value = 'Sister';
-            form.querySelector('#bank-name').value = 'Demo Bank';
-            form.querySelector('#bank-account').value = '1234567890123';
-            form.querySelector('#bank-branch').value = 'Demo Branch';
-            form.querySelector('#health-allergies').value = 'None';
-
-            // Trigger validation for all fields
-            form.querySelectorAll('input, select, textarea').forEach(input => {
-                handleInputValidation(input);
-            });
-
-            showAlert('success', 'Demo data filled successfully');
-        }
-
-        // Photo Handling
-        function initializePhotoHandling() {
-            const photoOptions = document.querySelectorAll('.photo-option');
-            const photoUpload = document.getElementById('photo-upload');
-            const cameraContainer = document.getElementById('camera-container');
-            const photoPreview = document.getElementById('photo-preview');
-            const previewImg = document.getElementById('preview-img');
-
-            // Photo option selection
-            photoOptions.forEach(option => {
-                option.addEventListener('click', () => {
-                    photoOptions.forEach(opt => opt.classList.remove('active'));
-                    option.classList.add('active');
-                    
-                    const optionType = option.dataset.option;
-                    
-                    if (optionType === 'upload') {
-                        cameraContainer.style.display = 'none';
-                        stopCamera();
-                        photoUpload.click();
-                    } else if (optionType === 'camera') {
-                        cameraContainer.style.display = 'block';
-                        enableCamera();
-                    }
-                });
-            });
-
-            // File upload handling
-            photoUpload.addEventListener('change', handlePhotoUpload);
-        }
-
-        function handlePhotoUpload(e) {
-            const file = e.target.files[0];
-            if (!file) return;
-
-            // Validate file type
-            if (!file.type.match(/^image\/(jpeg|png)$/)) {
-                showAlert('error', 'Please select a JPEG or PNG image');
-                return;
-            }
-
-            // Validate file size (2MB)
-            if (file.size > 2 * 1024 * 1024) {
-                showAlert('error', 'Image size must be less than 2MB');
-                return;
-            }
-
-            // Convert to base64 and show preview
-            toBase64(file)
-                .then(base64 => {
-                    const previewImg = document.getElementById('preview-img');
-                    const photoPreview = document.getElementById('photo-preview');
-                    
-                    previewImg.src = base64;
-                    photoPreview.style.display = 'block';
-                    
-                    showAlert('success', 'Photo uploaded successfully');
-                })
-                .catch(error => {
-                    console.error('Photo upload error:', error);
-                    showAlert('error', 'Failed to process photo');
-                });
-        }
-
-        // Camera Functions
-        function initializeCamera() {
-            const captureBtn = document.getElementById('capture-btn');
-            const retakeBtn = document.getElementById('retake-btn');
-
-            captureBtn.addEventListener('click', handleCapture);
-            retakeBtn.addEventListener('click', handleCameraToggle);
-        }
-
-        function enableCamera() {
-            const video = document.getElementById('camera-video');
-            
-            navigator.mediaDevices.getUserMedia({ video: { width: 400, height: 300 } })
-                .then(stream => {
-                    cameraStream = stream;
-                    video.srcObject = stream;
-                    video.style.display = 'block';
-                    document.getElementById('camera-canvas').style.display = 'none';
-                    document.getElementById('capture-btn').style.display = 'inline-block';
-                    document.getElementById('retake-btn').style.display = 'none';
-                })
-                .catch(error => {
-                    console.error('Camera access error:', error);
-                    showAlert('error', 'Camera access denied. Please use upload option.');
-                    // Fall back to upload
-                    document.querySelector('[data-option="upload"]').click();
-                });
-        }
-
-        function handleCapture() {
-            const video = document.getElementById('camera-video');
-            const canvas = document.getElementById('camera-canvas');
-            const context = canvas.getContext('2d');
-
-            canvas.width = 400;
-            canvas.height = 300;
-            context.drawImage(video, 0, 0, 400, 300);
-
-            // Show captured image
-            canvas.style.display = 'block';
-            video.style.display = 'none';
-            document.getElementById('capture-btn').style.display = 'none';
-            document.getElementById('retake-btn').style.display = 'inline-block';
-
-            // Convert to base64 and show preview
-            const dataUrl = captureFrameToDataURL(canvas);
-            const previewImg = document.getElementById('preview-img');
-            const photoPreview = document.getElementById('photo-preview');
-            
-            previewImg.src = dataUrl;
-            photoPreview.style.display = 'block';
-
-            showAlert('success', 'Photo captured successfully');
-        }
-
-        function captureFrameToDataURL(canvas) {
-            return canvas.toDataURL('image/jpeg', 0.8);
-        }
-
-        function handleCameraToggle() {
-            const video = document.getElementById('camera-video');
-            const canvas = document.getElementById('camera-canvas');
-            
-            canvas.style.display = 'none';
-            video.style.display = 'block';
-            document.getElementById('capture-btn').style.display = 'inline-block';
-            document.getElementById('retake-btn').style.display = 'none';
-        }
-
-        function stopCamera() {
-            if (cameraStream) {
-                cameraStream.getTracks().forEach(track => track.stop());
-                cameraStream = null;
-            }
-        }
-
-        // Database Management
-        function initializeDatabase() {
-            const searchInput = document.getElementById('search-input');
-            const sortSelect = document.getElementById('sort-select');
-            const exportBtn = document.getElementById('export-btn');
-            const importBtn = document.getElementById('import-btn');
-            const importFile = document.getElementById('import-file');
-
-            searchInput.addEventListener('input', loadDatabaseRecords);
-            sortSelect.addEventListener('change', loadDatabaseRecords);
-            exportBtn.addEventListener('click', dbExport);
-            importBtn.addEventListener('click', () => importFile.click());
-            importFile.addEventListener('change', handleImportRecords);
-        }
-
-        function loadDatabaseRecords() {
-            const db = dbLoad();
-            if (!db || !db.records) return;
-
-            const searchTerm = document.getElementById('search-input').value.toLowerCase();
-            const sortBy = document.getElementById('sort-select').value;
-            const tableBody = document.getElementById('records-table');
-            const noRecords = document.getElementById('no-records');
-
-            // Filter records
-            let filteredRecords = db.records.filter(record => {
-                const searchFields = [
-                    record.placeholders['<emp.name>'],
-                    record.placeholders['<emp.number>'],
-                    record.placeholders['<emp.company>'],
-                    record.placeholders['<emp.designation>']
-                ].join(' ').toLowerCase();
-                
-                return searchFields.includes(searchTerm);
-            });
-
-            // Sort records
-            filteredRecords.sort((a, b) => {
-                if (sortBy === 'createdAt') {
-                    return new Date(b.createdAt) - new Date(a.createdAt);
-                } else {
-                    const aVal = a.placeholders[`<${sortBy.replace('emp-', 'emp.')}>'] || '';
-                    const bVal = b.placeholders[`<${sortBy.replace('emp-', 'emp.')}>] || '';
-                    return aVal.localeCompare(bVal);
-                }
-            });
-
-            // Display records
-            if (filteredRecords.length === 0) {
-                tableBody.innerHTML = '';
-                noRecords.style.display = 'block';
-                return;
-            }
-
-            noRecords.style.display = 'none';
-            tableBody.innerHTML = filteredRecords.map(record => `
-                <tr>
-                    <td>${record.placeholders['<emp.number>']}</td>
-                    <td>${record.placeholders['<emp.name>']}</td>
-                    <td>${record.placeholders['<emp.company>']}</td>
-                    <td>${record.placeholders['<emp.designation>']}</td>
-                    <td>${new Date(record.createdAt).toLocaleDateString()}</td>
-                    <td>
-                        <div class="table-actions">
-                            <button class="btn btn-sm" onclick="viewRecord('${record.id}')">View</button>
-                            <button class="btn btn-sm btn-secondary" onclick="editRecord('${record.id}')">Edit</button>
-                            <button class="btn btn-sm btn-success" onclick="downloadRecordPdf('${record.id}')">PDF</button>
-                            <button class="btn btn-sm btn-warning" onclick="savePdfIntoRecord('${record.id}')">Save PDF</button>
-                            <button class="btn btn-sm btn-error" onclick="deleteRecord('${record.id}')">Delete</button>
-                        </div>
-                    </td>
-                </tr>
-            `).join('');
-        }
-
-        function viewRecord(id) {
-            const db = dbLoad();
-            const record = db.records.find(r => r.id === id);
-            if (!record) return;
-
-            const sidePanel = document.getElementById('side-panel');
-            const sidePanelTitle = document.getElementById('side-panel-title');
-            const sidePanelContent = document.getElementById('side-panel-content');
-            const overlay = document.getElementById('overlay');
-
-            sidePanelTitle.textContent = `Employee Details - ${record.placeholders['<emp.name>']}`;
-            
-            sidePanelContent.innerHTML = `
-                <div class="form-section">
-                    <h4>Personal Information</h4>
-                    <p><strong>Name:</strong> ${record.placeholders['<emp.name>']}</p>
-                    <p><strong>Employee Number:</strong> ${record.placeholders['<emp.number>']}</p>
-                    <p><strong>Company:</strong> ${record.placeholders['<emp.company>']} (${record.placeholders['<comp.code>']})</p>
-                    <p><strong>Designation:</strong> ${record.placeholders['<emp.designation>']}</p>
-                    <p><strong>Address:</strong> ${record.placeholders['<emp.address>']}</p>
-                    <p><strong>Phone:</strong> ${record.placeholders['<emp.phone>']}</p>
-                    <p><strong>Date of Birth:</strong> ${record.placeholders['<emp.dob>']}</p>
-                    <p><strong>Date of Joining:</strong> ${record.placeholders['<emp.doj>']}</p>
-                    <p><strong>Marital Status:</strong> ${record.placeholders['<emp.marital>']}</p>
-                </div>
-                
-                <div class="form-section">
-                    <h4>Emergency Contact</h4>
-                    <p><strong>Name:</strong> ${record.placeholders['<emg.name>']}</p>
-                    <p><strong>Number:</strong> ${record.placeholders['<emg.number>']}</p>
-                    <p><strong>Relationship:</strong> ${record.placeholders['<emg.rel>']}</p>
-                </div>
-                
-                <div class="form-section">
-                    <h4>Banking Information</h4>
-                    <p><strong>Bank:</strong> ${record.placeholders['<bank.name>']}</p>
-                    <p><strong>Account:</strong> ${record.placeholders['<bank.account>']}</p>
-                    <p><strong>Branch:</strong> ${record.placeholders['<bank.branch>']}</p>
-                </div>
-                
-                <div class="form-section">
-                    <h4>Health Information</h4>
-                    <p><strong>Allergies:</strong> ${record.placeholders['<health.allergies>']}</p>
-                </div>
-                
-                ${record.placeholders['<photo>'] ? `
-                <div class="form-section">
-                    <h4>Photo</h4>
-                    <img src="${record.placeholders['<photo>']}" alt="Employee photo" style="max-width: 200px; max-height: 200px; border-radius: var(--radius);">
-                </div>
-                ` : ''}
-                
-                <div class="form-section">
-                    <h4>Record Information</h4>
-                    <p><strong>Created:</strong> ${new Date(record.createdAt).toLocaleString()}</p>
-                    <p><strong>Updated:</strong> ${new Date(record.updatedAt).toLocaleString()}</p>
-                    <p><strong>PDF URL:</strong> ${record.pdf.url}</p>
-                </div>
-
-                <div class="form-section">
-                    <h4>JSON Data</h4>
-                    <button class="btn btn-secondary" onclick="copyRecordJson('${id}')">Copy JSON</button>
-                    <div class="json-viewer">${JSON.stringify(record, null, 2)}</div>
-                </div>
-            `;
-
-            sidePanel.classList.add('open');
-            overlay.classList.add('show');
-        }
-
-        function copyRecordJson(id) {
-            const db = dbLoad();
-            const record = db.records.find(r => r.id === id);
-            if (!record) return;
-
-            navigator.clipboard.writeText(JSON.stringify(record, null, 2))
-                .then(() => showAlert('success', 'JSON copied to clipboard'))
-                .catch(() => showAlert('error', 'Failed to copy JSON'));
-        }
-
-        function editRecord(id) {
-            const db = dbLoad();
-            const record = db.records.find(r => r.id === id);
-            if (!record) return;
-
-            // Switch to form tab
-            document.querySelector('[data-tab="form"]').click();
-
-            // Fill form with record data
-            const form = document.getElementById('employee-form');
-            
-            Object.entries(record.placeholders).forEach(([key, value]) => {
-                const fieldMap = {
-                    '<comp.code>': 'comp-code',
-                    '<emp.company>': 'emp-company',
-                    '<emp.name>': 'emp-name',
-                    '<emp.number>': 'emp-number',
-                    '<emp.designation>': 'emp-designation',
-                    '<emp.address>': 'emp-address',
-                    '<emp.phone>': 'emp-phone',
-                    '<emp.aadhar>': 'emp-aadhaar',
-                    '<emp.dob>': 'emp-dob',
-                    '<emp.doj>': 'emp-doj',
-                    '<emp.marital>': 'emp-marital',
-                    '<emg.name>': 'emg-name',
-                    '<emg.number>': 'emg-number',
-                    '<emg.rel>': 'emg-rel',
-                    '<bank.name>': 'bank-name',
-                    '<bank.account>': 'bank-account',
-                    '<bank.branch>': 'bank-branch',
-                    '<health.allergies>': 'health-allergies'
-                };
-
-                const fieldName = fieldMap[key];
-                if (fieldName) {
-                    const field = form.querySelector(`[name="${fieldName}"]`);
-                    if (field) {
-                        field.value = value === 'None' && fieldName === 'health-allergies' ? '' : value;
-                        if (fieldName === 'emp-aadhaar') {
-                            field.value = formatAadhaarForDisplay(value);
-                        }
-                    }
-                }
-            });
-
-            // Handle photo
-            if (record.placeholders['<photo>']) {
-                const previewImg = document.getElementById('preview-img');
-                const photoPreview = document.getElementById('photo-preview');
-                previewImg.src = record.placeholders['<photo>'];
-                photoPreview.style.display = 'block';
-            }
-
-            // Store edit ID for later update
-            form.dataset.editId = id;
-
-            // Validate all fields
-            form.querySelectorAll('input, select, textarea').forEach(input => {
-                handleInputValidation(input);
-            });
-
-            showAlert('success', 'Record loaded for editing');
-        }
-
-        function downloadRecordPdf(id) {
-            const db = dbLoad();
-            const record = db.records.find(r => r.id === id);
-            if (!record) return;
-
-            const url = `http://127.0.0.1:5000${record.pdf.url}`;
-            window.open(url, '_blank');
-        }
-
-        function savePdfIntoRecord(id) {
-            const db = dbLoad();
-            const record = db.records.find(r => r.id === id);
-            if (!record) return;
-
-            if (!db.meta.allowPdfBlob) {
-                showAlert('error', 'PDF storage is disabled. Enable it in Settings tab.');
-                return;
-            }
-
-            fetchPdfAsBase64(record.pdf.url, id);
-        }
-
-        function deleteRecord(id) {
-            if (!confirm('Are you sure you want to delete this record?')) return;
-
-            if (dbDelete(id)) {
-                loadDatabaseRecords();
-                showAlert('success', 'Record deleted successfully');
-            } else {
-                showAlert('error', 'Failed to delete record');
-            }
-        }
-
-        function handleImportRecords(e) {
-            const file = e.target.files[0];
-            if (!file) return;
-
-            const merge = confirm('Do you want to merge with existing records? Click Cancel to replace all records.');
-
-            dbImport(file, merge)
-                .then(count => {
-                    loadDatabaseRecords();
-                    showAlert('success', `Successfully imported ${count} records`);
-                })
-                .catch(error => {
-                    showAlert('error', `Import failed: ${error.message}`);
-                });
-
-            e.target.value = ''; // Reset file input
-        }
-
-        // Settings Management
-        function initializeSettings() {
-            const allowPdfStorage = document.getElementById('allow-pdf-storage');
-            const clearDbBtn = document.getElementById('clear-db-btn');
-            const exportDbBtn = document.getElementById('export-db-btn');
-            const importDbBtn = document.getElementById('import-db-btn');
-            const importDbFile = document.getElementById('import-db-file');
-            const demoRecordBtn = document.getElementById('demo-record-btn');
-
-            // Load current settings
-            const db = dbLoad();
-            allowPdfStorage.checked = db.meta.allowPdfBlob;
-
-            // Settings event handlers
-            allowPdfStorage.addEventListener('change', function() {
-                const db = dbLoad();
-                db.meta.allowPdfBlob = this.checked;
-                dbSave(db);
-                showAlert('success', 'PDF storage setting updated');
-            });
-
-            clearDbBtn.addEventListener('click', function() {
-                if (!confirm('Are you sure you want to delete ALL records? This cannot be undone.')) return;
-                
-                const db = dbLoad();
-                db.records = [];
-                dbSave(db);
-                loadDatabaseRecords();
-                updateStorageInfo();
-                showAlert('success', 'All records cleared');
-            });
-
-            exportDbBtn.addEventListener('click', dbExport);
-            importDbBtn.addEventListener('click', () => importDbFile.click());
-            importDbFile.addEventListener('change', handleImportDatabase);
-            demoRecordBtn.addEventListener('click', demoRecord);
-        }
-
-        function handleImportDatabase(e) {
-            const file = e.target.files[0];
-            if (!file) return;
-
-            if (!confirm('This will replace your entire database. Are you sure?')) return;
-
-            dbImport(file, false)
-                .then(count => {
-                    loadDatabaseRecords();
-                    updateStorageInfo();
-                    showAlert('success', `Database imported with ${count} records`);
-                })
-                .catch(error => {
-                    showAlert('error', `Import failed: ${error.message}`);
-                });
-
-            e.target.value = ''; // Reset file input
-        }
-
-        function demoRecord() {
-            const demoData = {
-                placeholders: {
-                    '<comp.code>': 'DEMO-CORP',
-                    '<emp.company>': 'Demo Corporation',
-                    '<emp.name>': 'Alice Smith',
-                    '<emp.number>': 'EMP999',
-                    '<emp.designation>': 'Senior Developer',
-                    '<emp.address>': '456 Demo Avenue, Demo City, Demo State - 654321',
-                    '<emp.phone>': '8765432109',
-                    '<emp.aadhar>': '987654321098',
-                    '<emp.dob>': '1985-05-15',
-                    '<emp.doj>': '2018-03-01',
-                    '<emp.marital>': 'Married',
-                    '<emg.name>': 'Bob Smith',
-                    '<emg.number>': '8765432108',
-                    '<emg.rel>': 'Spouse',
-                    '<bank.name>': 'Demo National Bank',
-                    '<bank.account>': '9876543210987',
-                    '<bank.branch>': 'Demo Central Branch',
-                    '<health.allergies>': 'Peanuts',
-                    '<photo>': ''
-                },
-                pdf: {
-                    url: '/EmployeeData/EMP999/Alice Smith',
-                    fetchedAt: new Date().toISOString(),
-                    blobBase64: null
-                }
-            };
-
-            dbAdd(demoData);
-            loadDatabaseRecords();
-            updateStorageInfo();
-            showAlert('success', 'Demo record inserted successfully');
-        }
-
-        function updateStorageInfo() {
-            const db = dbLoad();
-            const info = document.getElementById('storage-info');
-            
-            const totalRecords = db.records.length;
-            const storageBytes = db.meta.storageBytes;
-            const storageKB = Math.round(storageBytes / 1024 * 100) / 100;
-            
-            info.innerHTML = `
-                Total Records: ${totalRecords}<br>
-                Storage Usage: ${storageKB} KB<br>
-                PDF Storage: ${db.meta.allowPdfBlob ? 'Enabled' : 'Disabled'}
-            `;
-        }
-
-        // Side Panel Management
-        document.getElementById('side-panel-close').addEventListener('click', closeSidePanel);
-        document.getElementById('overlay').addEventListener('click', closeSidePanel);
-
-        function closeSidePanel() {
-            document.getElementById('side-panel').classList.remove('open');
-            document.getElementById('overlay').classList.remove('show');
-        }
-
-        // Utility Functions
-        function showAlert(type, message) {
-            const alert = document.getElementById('form-alert');
-            alert.className = `alert alert-${type} show`;
-            alert.textContent = message;
-            alert.setAttribute('aria-live', 'polite');
-
-            setTimeout(() => {
-                alert.classList.remove('show');
-            }, 5000);
-        }
-
-        // Cleanup on page unload
-        window.addEventListener('beforeunload', function() {
-            stopCamera();
-        });
-
-        // Keyboard navigation
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape') {
-                closeSidePanel();
-            }
-        });
-    </script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
